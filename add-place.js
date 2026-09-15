@@ -78,7 +78,7 @@ function pool(){
   S.base=PLACES.filter(p=>
     (!S.loc.size||S.loc.has(p.l))&&(!S.price.size||S.price.has(p.p))&&
     (!S.cui.size||S.cui.has(p.c))&&
-    (!S.extra.has("now")||state(p,new Date())!=="closed")&&
+    (!S.extra.has("now")||state(p,new Date())==="open")&&
     (!S.extra.has("halal")||p.halal)&&
     (!S.extra.has("fresh")||!recent.includes(p.n)));
   S.pool=[...S.base];paint();
