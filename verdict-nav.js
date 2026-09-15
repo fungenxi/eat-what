@@ -71,6 +71,10 @@ function normalizeHistory(){
   S.log=merged;
 }
 
+function saveVisitHistory(){
+  writeLocal(STORAGE.log,S.log);
+}
+
 function recordVisit(pl,how){
   normalizeHistory();
   const key=pl.id||[pl.n,pl.l||"",pl.area||""].join("|");
@@ -81,7 +85,7 @@ function recordVisit(pl,how){
   }else{
     S.log.unshift({key,id:pl.id||null,n:pl.n,l:pl.l||"",area:pl.area||"Civic District",how,ts:Date.now(),visits:1,rating:null});
   }
-  saveHistory();
+  saveVisitHistory();
 }
 
 function rateVisit(index,rating){
@@ -89,7 +93,7 @@ function rateVisit(index,rating){
   if(!item)return;
   item.rating=rating;
   item.ratedAt=Date.now();
-  saveHistory();
+  saveVisitHistory();
   renderLog();
 }
 
