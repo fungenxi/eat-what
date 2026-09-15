@@ -4,9 +4,9 @@ A lunch decider for a small office in Singapore's Civic District. It narrows a r
 
 ## Live deployment
 
-This repo is intended to be deployed with **GitHub Pages** from the `main` branch, `/ (root)`.
+This repo is deployed with **GitHub Pages** from the `main` branch, `/ (root)`.
 
-Once Pages is enabled, every commit to `main` becomes the next live version. There is intentionally no separate dev branch for now.
+Every commit to `main` becomes the next live version. There is intentionally no separate dev branch for now.
 
 Expected URL:
 
@@ -24,11 +24,14 @@ The current setup is designed to stay free:
 
 ## Project structure
 
-The app is still plain HTML/CSS/JavaScript with no build step, npm, framework, or bundler. It has been split into small files so future feature work is easier to maintain.
+The app is plain HTML/CSS/JavaScript with no build step, npm, framework, or bundler.
 
 - `index.html` — page structure and script loading
-- `styles.css` — all visual styling
+- `styles.css` — main visual styling
+- `mobile.css` — responsive/mobile resilience overrides
 - `data.js` — curated master restaurant list + browser persistence helpers
+- `data-cleanup.js` — non-destructive data normalization + automatic data audit
+- `DATA_GUIDE.md` — restaurant data standards and cleanup queue
 - `core.js` — app state, time/opening-hours logic, shared helpers
 - `filters.js` — filters
 - `add-place.js` — personal place form and local saving
@@ -53,6 +56,14 @@ That is deliberate for the current free version. A shared backend can be added l
 
 ## Updating the restaurant database
 
-For now, edit `MASTER_PLACES` in `data.js`. This is intentionally simple while the list is still manageable.
+For now, edit `MASTER_PLACES` in `data.js`. Follow `DATA_GUIDE.md` when adding or cleaning records.
+
+`data-cleanup.js` currently enriches the compact records with clearer fields such as `id`, `name`, `building`, `unit`, `locationHint`, `halalStatus`, and `hoursSource` without breaking the existing app.
+
+For a quick data-quality check in the browser console, inspect:
+
+```js
+EAT_WHAT_DATA_AUDIT
+```
 
 If the dataset eventually becomes cumbersome to maintain in code, it can be moved to a free-tier database later without changing the GitHub Pages hosting setup.
