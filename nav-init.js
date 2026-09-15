@@ -1,4 +1,12 @@
 /* ---------- nav ---------- */
+function animateTitle(n){
+  const title=$("s"+n)?.querySelector(".title-motion");
+  if(!title)return;
+  title.classList.remove("title-pop");
+  void title.offsetWidth;
+  title.classList.add("title-pop");
+}
+
 function go(n){
   S.stage=n;restore();
   [0,1,2].forEach(i=>$("s"+i).classList.toggle("hide",i!==n));
@@ -7,6 +15,7 @@ function go(n){
   document.querySelectorAll("#nav button").forEach((b,i)=>b.setAttribute("data-on",String(i===n)));
   if(n===1&&!$("rPick").children.length)buildRituals();
   if(n===2)buildMechs();
+  animateTitle(n);
   window.scrollTo({top:0,behavior:"smooth"});
 }
 document.querySelectorAll("#nav button").forEach(b=>b.onclick=()=>go(+b.dataset.go));
