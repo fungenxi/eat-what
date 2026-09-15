@@ -16,41 +16,12 @@
   opacity:.92;
 }
 
-/* Brand tap: one lightweight steam/smoke puff. No moving illustrations. */
-.mark.brand-smoke::before,
-.mark.brand-smoke::after{
-  content:"";
-  position:absolute;
-  z-index:-1;
-  pointer-events:none;
-  border:2px solid currentColor;
-  border-radius:54% 46% 58% 42% / 48% 58% 42% 52%;
-  opacity:0;
-}
-.mark.brand-smoke::before{
-  right:-8px;
-  top:-5px;
-  width:10px;
-  height:10px;
-  box-shadow:9px -5px 0 -2px transparent,9px -5px 0 0 currentColor;
-  animation:brandSmokeA .72s var(--e) forwards;
-}
-.mark.brand-smoke::after{
-  right:-18px;
-  top:-9px;
-  width:7px;
-  height:7px;
-  animation:brandSmokeB .72s .06s var(--e) forwards;
-}
-@keyframes brandSmokeA{
-  0%{opacity:0;transform:translate(0,5px) scale(.45) rotate(-8deg)}
-  28%{opacity:.7}
-  100%{opacity:0;transform:translate(7px,-16px) scale(1.45) rotate(9deg)}
-}
-@keyframes brandSmokeB{
-  0%{opacity:0;transform:translate(0,4px) scale(.4)}
-  32%{opacity:.55}
-  100%{opacity:0;transform:translate(5px,-13px) scale(1.35)}
+/* Brand tap: mild tactile pop only. */
+.mark.brand-pop{animation:brandTapPop .24s var(--e)}
+@keyframes brandTapPop{
+  0%{transform:scale(.98)}
+  52%{transform:scale(1.055)}
+  100%{transform:scale(1)}
 }
 
 /* ---------- title doodles ---------- */
@@ -253,7 +224,6 @@
 }
 
 @media (prefers-reduced-motion:reduce){
-  .title-motion .title-copy,.title-doodle path,.winner-reveal::before,.winner-kicker,.winner-reveal .winner,.star-fill,.history-empty-art path,.mark.brand-smoke::before,.mark.brand-smoke::after{animation:none!important}
+  .mark.brand-pop,.title-motion .title-copy,.title-doodle path,.winner-reveal::before,.winner-kicker,.winner-reveal .winner,.star-fill,.history-empty-art path{animation:none!important}
   .winner-kicker,.winner-reveal .winner{opacity:1;transform:none}
-  .mark.brand-smoke::before,.mark.brand-smoke::after{display:none!important}
 }
