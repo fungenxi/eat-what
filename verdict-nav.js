@@ -74,10 +74,10 @@ function normalizeHistory(){
 function recordVisit(pl,how){
   normalizeHistory();
   const key=pl.id||[pl.n,pl.l||"",pl.area||""].join("|");
-  const i=S.log.findIndex(x=>visitKey(x)===key);
+  const i=S.log.findIndex(x=>x.id&&pl.id?x.id===pl.id:(!x.id&&x.n===pl.n));
   if(i>=0){
     const old=S.log.splice(i,1)[0];
-    S.log.unshift({...old,key,n:pl.n,l:pl.l,area:pl.area||"Civic District",how,ts:Date.now(),visits:(Number(old.visits)||1)+1});
+    S.log.unshift({...old,key,id:pl.id||old.id||null,n:pl.n,l:pl.l,area:pl.area||"Civic District",how,ts:Date.now(),visits:(Number(old.visits)||1)+1});
   }else{
     S.log.unshift({key,id:pl.id||null,n:pl.n,l:pl.l||"",area:pl.area||"Civic District",how,ts:Date.now(),visits:1,rating:null});
   }
