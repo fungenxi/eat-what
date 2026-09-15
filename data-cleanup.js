@@ -51,6 +51,8 @@ function enrichMasterPlace(place){
     url:place.hoursUrl||null,
     label:place.hoursSourceLabel||null
   };
+  place.hiddenGem=place.hiddenGem===true;
+  place.newTag=place.new===true;
   place.status="active";
   return place;
 }
@@ -96,6 +98,8 @@ function auditMasterPlaces(records){
     recentlyCheckedHours:records.filter(p=>p.hoursSource?.checked).length,
     halalCertified:records.filter(p=>p.halalStatus==="certified").length,
     halalUnknown:records.filter(p=>p.halalStatus==="unknown").length,
+    hiddenGems:records.filter(p=>p.hiddenGem).length,
+    newTagged:records.filter(p=>p.newTag).length,
     withUnit:records.filter(p=>p.unit).length,
     withAddress:records.filter(p=>p.address).length,
     withLocationHint:records.filter(p=>p.locationHint).length
