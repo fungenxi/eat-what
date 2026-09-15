@@ -92,8 +92,17 @@ function auditMasterPlaces(records){
 
     if(!ALLOWED_STATUS.has(place.status))
       issues.push(label+": invalid status");
+
+    /* Chinatown is our first fully location-aware area: do not silently add a
+       new active stall without hours, a full address, and a stall/unit hint. */
+    if(place.area==="Chinatown"&&place.status==="active"){
+      if(!place.h)issues.push(label+": Chinatown place missing opening hours");
+      if(!place.address)issues.push(label+": Chinatown place missing full address");
+      if(!place.w)issues.push(label+": Chinatown place missing unit / stall location");
+    }
   });
 
+  const chinatown=records.filter(p=>p.area==="Chinatown"&&p.status==="active");
   const counts={
     total:records.length,
     active:records.filter(p=>p.status==="active").length,
@@ -102,6 +111,8 @@ function auditMasterPlaces(records){
     stallHours:records.filter(p=>p.hoursSource?.level==="stall").length,
     buildingHours:records.filter(p=>p.hoursSource?.level==="building").length,
     unknownHours:records.filter(p=>p.hoursSource?.level==="unknown").length,
+    withHours:records.filter(p=>p.h).length,
+    missingHours:records.filter(p=>p.status==="active"&&!p.h).length,
     recentlyCheckedHours:records.filter(p=>p.hoursSource?.checked).length,
     halalCertified:records.filter(p=>p.halalStatus==="certified").length,
     halalUnknown:records.filter(p=>p.halalStatus==="unknown").length,
@@ -109,7 +120,12 @@ function auditMasterPlaces(records){
     newTagged:records.filter(p=>p.newTag&&p.status==="active").length,
     withUnit:records.filter(p=>p.unit).length,
     withAddress:records.filter(p=>p.address).length,
-    withLocationHint:records.filter(p=>p.locationHint).length
+    missingAddress:records.filter(p=>p.status==="active"&&!p.address).length,
+    withLocationHint:records.filter(p=>p.locationHint).length,
+    chinatownTotal:chinatown.length,
+    chinatownWithHours:chinatown.filter(p=>p.h).length,
+    chinatownWithAddress:chinatown.filter(p=>p.address).length,
+    chinatownWithUnitOrHint:chinatown.filter(p=>p.w).length
   };
 
   return {counts,issues};
