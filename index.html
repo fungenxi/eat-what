@@ -6,15 +6,16 @@
 <title>Eat What?!</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@400;600;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Bungee&family=Bungee+Shade&family=Gabarito:wght@400;600;800;900&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="mobile.css">
+<link rel="stylesheet" href="features.css">
 </head>
 <body>
 <div class="app">
 
   <div class="top">
-    <button class="mark" id="brandName" type="button" aria-label="Change the Eat What name" aria-live="polite" title="Tap me">Eat What?!</button>
+    <button class="mark" id="brandName" data-brand="eat" type="button" aria-label="Change the Eat What name" aria-live="polite" title="Tap me">Eat What?!</button>
     <div class="meta"><b id="clock"></b></div>
   </div>
 
@@ -63,7 +64,13 @@
   <section id="sv" class="hide"></section>
 
   <section id="logBox" class="hide" style="margin-top:10px">
-    <div class="panel"><div class="lbl">Eaten recently</div><div id="logList"></div></div>
+    <div class="panel visit-panel">
+      <div class="visit-head">
+        <div><div class="lbl">Been there</div><div class="visit-kicker">Rate it anytime · 1 nah → 5 go again</div></div>
+        <span class="visit-count" id="visitCount"></span>
+      </div>
+      <div id="logList"></div>
+    </div>
   </section>
 
 </div>
