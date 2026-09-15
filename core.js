@@ -24,7 +24,7 @@ const ICON={
 };
 const ARROW=d=>'<svg '+S24+' style="transform:rotate('+d+'deg)"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg>';
 const DIRS={"Funan":0,"Capitol":45,"Adelphi":90,"Raffles City":135,
-  "Clarke Quay":270,"Nat Gallery":180,"Raffles Xchange":135};
+  "Clarke Quay":270,"Clarke Quay Central":270,"Nat Gallery":180,"Raffles Xchange":135};
 
 const HEADS=[["Narrow","it down"],["Ask","the room"],["Let fate","decide"]];
 const BG=["var(--teal)","var(--plum)","var(--coral)"];
