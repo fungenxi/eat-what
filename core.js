@@ -79,6 +79,12 @@ function closingIn(pl,d){
   const t=clockOf(d),w=h.find(x=>t>=x[0]&&t<x[1]);
   return w?Math.round((w[1]-t)*60):null;
 }
+function closingAt(pl,d){
+  const h=hoursFor(pl,d);
+  if(!h)return null;
+  const t=clockOf(d),w=h.find(x=>t>=x[0]&&t<x[1]);
+  return w?w[1]:null;
+}
 function fmtT(v){
   const hh=Math.floor(v),mm=Math.round((v-hh)*60);
   const ap=hh<12?"am":"pm",h12=(hh%12)===0?12:hh%12;
@@ -91,6 +97,7 @@ function hoursLine(pl,d){
   return h.map(w=>fmtT(w[0])+" to "+fmtT(w[1])).join(" and ")+" today";
 }
 const specialToday=(pl,d)=>pl.sp&&pl.sp.d.includes(d.getDay())?pl.sp.t:null;
+const earlyBestTime=pl=>Number.isFinite(pl.earlyBefore)?pl.earlyBefore:12;
 
 function tickClock(){
   drawToday(new Date());
@@ -103,9 +110,9 @@ function drawToday(d){
         early=scope.filter(p=>p.early),
         t=clockOf(d);
   let bits="";
-  if(soon.length)bits+='<li><em>Closing soon</em><span>'+soon.map(p=>p.n).join(", ")+'</span></li>';
+  if(soon.length)bits+='<li><em>Closing soon</em><span>'+soon.map(p=>p.n+' closes at '+fmtT(closingAt(p,d))).join('; ')+'</span></li>';
   specials.forEach(p=>bits+='<li><em>Today only</em><span>'+p.sp.t+' at '+p.n+'</span></li>');
-  if(t>=12.5&&early.length)bits+='<li><em>Best earlier</em><span>'+early.map(p=>p.n).join(", ")+' is best before noon</span></li>';
+  if(t>=12.5&&early.length)bits+='<li><em>Best earlier</em><span>'+early.map(p=>p.n+' is best before '+fmtT(earlyBestTime(p))).join('; ')+'</span></li>';
 
   const status=S.extra.has("now")?'<b>Showing only places open now.</b> ':'';
   const html=(status||bits)?'<div class="today">'+status+(bits?'<ul>'+bits+'</ul>':'')+'</div>':'';
