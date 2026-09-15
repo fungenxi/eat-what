@@ -3,7 +3,7 @@
   const configs=[
     {selector:".title-narrow",label:"Narrow it down",a:"hand-drawn underline",b:"slide-in highlight"},
     {selector:".title-room",label:"Ask the room",a:"sparkle pop",b:"chat bubble bounce"},
-    {selector:".title-fate",label:"Let fate decide",a:"orbiting star",b:"soft pulse"}
+    {selector:".title-fate",label:"Let fate decide",a:"magic dust",b:"constellation pop"}
   ];
 
   function replay(title){
