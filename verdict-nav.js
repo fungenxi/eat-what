@@ -66,6 +66,7 @@ function normalizeHistory(){
     }
     if(!copy.ts){copy.ts=Date.now()-index;changed=true;}
     if(copy.rating===undefined)copy.rating=null;
+    if(copy.area==="Civic District"){copy.area="CBD";changed=true;}
     if(Number(copy.visits)>1&&!copy.legacyVisits){
       copy.legacyVisits=Number(copy.visits);
       changed=true;
@@ -84,7 +85,7 @@ function recordVisit(pl,how){
     id:pl.id||null,
     n:pl.n,
     l:pl.l||"",
-    area:pl.area||"Civic District",
+    area:placeArea(pl),
     how:how||"",
     ts:Date.now(),
     rating:null
