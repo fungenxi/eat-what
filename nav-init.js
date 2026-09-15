@@ -13,15 +13,27 @@ document.querySelectorAll("#nav button").forEach(b=>b.onclick=()=>go(+b.dataset.
 document.querySelectorAll("[data-next]").forEach(b=>b.onclick=()=>go(+b.dataset.next));
 
 /* ---------- playful app-name switcher ---------- */
-const BRAND_NAMES=["Eat What?!","Jiak Simi?!","Makan Apa?!","吃什么?!"];
+const BRAND_NAMES=[
+  {text:"Eat What?!",key:"eat"},
+  {text:"Jiak Simi?!",key:"jiak"},
+  {text:"Makan Apa?!",key:"makan"},
+  {text:"吃什么?!",key:"chi"}
+];
 let brandIndex=0;
 const brand=$("brandName");
 if(brand){
+  const paintBrand=()=>{
+    const next=BRAND_NAMES[brandIndex];
+    brand.textContent=next.text;
+    brand.dataset.brand=next.key;
+    brand.setAttribute("aria-label","App name: "+next.text+". Tap to switch");
+  };
+  paintBrand();
   brand.onclick=()=>{
     brandIndex=(brandIndex+1)%BRAND_NAMES.length;
     brand.classList.remove("brand-pop");
     void brand.offsetWidth;
-    brand.textContent=BRAND_NAMES[brandIndex];
+    paintBrand();
     brand.classList.add("brand-pop");
   };
 }
