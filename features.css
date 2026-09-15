@@ -1,6 +1,6 @@
 /* Playful brand switcher + history/rating UI. */
 
-/* Keep the language switch fun, but legible and visually calm. */
+/* Keep Eat What?! clean; make the alternate language states more playful. */
 .mark[data-brand="eat"]{
   font-family:"Gabarito",sans-serif;
   font-size:18px;
@@ -8,25 +8,25 @@
   letter-spacing:-.03em;
 }
 .mark[data-brand="jiak"]{
-  font-family:"Fredoka","Gabarito",sans-serif;
-  font-size:18px;
-  font-weight:700;
-  letter-spacing:-.02em;
-  transform:rotate(-.35deg);
+  font-family:"Lilita One","Gabarito",sans-serif;
+  font-size:20px;
+  font-weight:400;
+  letter-spacing:.005em;
+  transform:rotate(-.7deg);
 }
 .mark[data-brand="makan"]{
-  font-family:"Fredoka","Gabarito",sans-serif;
+  font-family:"DynaPuff","Gabarito",sans-serif;
   font-size:18px;
-  font-weight:600;
+  font-weight:700;
   letter-spacing:-.015em;
-  transform:rotate(.25deg);
+  transform:rotate(.45deg);
 }
 .mark[data-brand="chi"]{
-  font-family:"Noto Sans SC","Gabarito",sans-serif;
-  font-size:18px;
-  font-weight:800;
-  letter-spacing:0;
-  transform:none;
+  font-family:"ZCOOL KuaiLe","Gabarito",sans-serif;
+  font-size:20px;
+  font-weight:400;
+  letter-spacing:.025em;
+  transform:rotate(-.35deg);
 }
 
 /* ---------- quick action FAB ---------- */
@@ -211,10 +211,10 @@ body.modal-open{overflow:hidden}
 }
 
 @media (max-width:390px){
-  .mark[data-brand="eat"],
-  .mark[data-brand="jiak"],
-  .mark[data-brand="makan"],
-  .mark[data-brand="chi"]{font-size:17px}
+  .mark[data-brand="eat"]{font-size:17px}
+  .mark[data-brand="jiak"]{font-size:19px}
+  .mark[data-brand="makan"]{font-size:17px}
+  .mark[data-brand="chi"]{font-size:19px}
   .rating-btn{min-height:40px}
   .quick-action{font-size:13px}
 }
