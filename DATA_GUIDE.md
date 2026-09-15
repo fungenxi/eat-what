@@ -8,10 +8,10 @@ There are currently **31 shared places**.
 
 Opening-hours quality after the 15 Sep 2026 verification pass:
 
-- **30** have venue/stall-specific hours
+- **31** have venue/stall-specific hours
 - **0** rely only on generic mall hours
-- **1** has unverified hours: **Yuen Kee Dumpling (Funan)**
-- **24** records were actively checked on 15 Sep 2026 and carry a source label/date
+- **0** have unverified hours
+- **25** records were actively checked on 15 Sep 2026 and carry a source label/date
 
 Halal data:
 
@@ -55,7 +55,7 @@ This directly affects the `Open now` filter, so accuracy matters more than compl
 - `building` = only building hours are known
 - `unknown` = hours have not been verified
 
-The `Open now` filter now includes **only places confirmed open at that moment**. Unknown-hours places are excluded instead of being treated as possibly open.
+The `Open now` filter includes **only places confirmed open at that moment**. Unknown-hours places are excluded instead of being treated as possibly open.
 
 The hours engine supports:
 
@@ -85,6 +85,8 @@ The Clarke Quay entries in the dataset now use **Clarke Quay Central** where the
 Generic `Clarke Quay Food Court` was replaced with the current **Sinfoodie** food court.
 
 `Yuan Kee Dumpling` was corrected to **Yuen Kee Dumpling** and the Funan unit was set to `02-03`.
+
+The Yuen Kee Dumpling Funan record now also has verified daily opening hours of **10am–9pm**, based on the user-provided business listing. The Chinese name `袁记云饺` is retained as an alternate name in the data.
 
 ## Halal rule
 
@@ -121,7 +123,6 @@ This is the next meaningful cleanup area once hours/location data are stable. `t
 
 ## Items still needing verification
 
-- **Yuen Kee Dumpling (Funan)** — unit is verified, but opening hours still need a trustworthy outlet-specific source
 - **Punggol Nasi Lemak** — business branding may use `Ponggol`; preserve the current name until verified
 - older stall-specific records without `hoursChecked` should eventually receive a provenance pass
 - all `colour` values are subjective and worth a human sanity pass
