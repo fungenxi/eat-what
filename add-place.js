@@ -89,7 +89,12 @@ function openSheet(){
 
 /* ---------- bottom-right quick actions ---------- */
 const quickFab=$("quickFab"),quickActions=$("quickActions");
-let quickOpen=false,draggingQuick=false,dragTarget=null,openedOnPointerDown=false,suppressQuickClick=false;
+let quickOpen=false;
+let quickPointerActive=false;
+let quickWasOpen=false;
+let quickStart={x:0,y:0};
+let quickDragTarget=null;
+let suppressQuickClick=false;
 
 function setQuickOpen(on){
   quickOpen=on;
@@ -100,7 +105,7 @@ function setQuickOpen(on){
   quickFab.setAttribute("data-open",String(on));
   if(!on){
     quickActions.querySelectorAll(".quick-action").forEach(b=>b.classList.remove("drag-over"));
-    dragTarget=null;
+    quickDragTarget=null;
   }
 }
 
@@ -116,37 +121,53 @@ if(quickFab&&quickActions){
   });
 
   quickFab.addEventListener("pointerdown",e=>{
-    openedOnPointerDown=!quickOpen;
-    if(openedOnPointerDown)setQuickOpen(true);
-    draggingQuick=true;dragTarget=null;
+    quickPointerActive=true;
+    quickWasOpen=quickOpen;
+    quickStart={x:e.clientX,y:e.clientY};
+    quickDragTarget=null;
+    if(!quickOpen)setQuickOpen(true);
     quickFab.setPointerCapture?.(e.pointerId);
   });
 
   quickFab.addEventListener("pointermove",e=>{
-    if(!draggingQuick||!quickOpen)return;
+    if(!quickPointerActive||!quickOpen)return;
+    const moved=Math.hypot(e.clientX-quickStart.x,e.clientY-quickStart.y)>8;
+    if(!moved){
+      quickActions.querySelectorAll(".quick-action").forEach(b=>b.classList.remove("drag-over"));
+      quickDragTarget=null;
+      return;
+    }
     const hit=document.elementFromPoint(e.clientX,e.clientY)?.closest?.("[data-quick]");
     quickActions.querySelectorAll(".quick-action").forEach(b=>b.classList.toggle("drag-over",b===hit));
-    dragTarget=hit||null;
+    quickDragTarget=hit||null;
   });
 
   quickFab.addEventListener("pointerup",e=>{
-    if(!draggingQuick)return;
-    draggingQuick=false;
-    if(dragTarget){
-      const action=dragTarget.dataset.quick;
-      suppressQuickClick=true;
-      runQuickAction(action);
-      setTimeout(()=>{suppressQuickClick=false;},0);
+    if(!quickPointerActive)return;
+    quickPointerActive=false;
+    suppressQuickClick=true;
+    if(quickDragTarget){
+      runQuickAction(quickDragTarget.dataset.quick);
+    }else if(quickWasOpen){
+      setQuickOpen(false);
+    }else{
+      setQuickOpen(true);
     }
+    quickDragTarget=null;
     quickFab.releasePointerCapture?.(e.pointerId);
+    setTimeout(()=>{suppressQuickClick=false;},80);
   });
 
-  quickFab.addEventListener("pointercancel",()=>{draggingQuick=false;dragTarget=null;});
+  quickFab.addEventListener("pointercancel",()=>{
+    quickPointerActive=false;
+    quickDragTarget=null;
+  });
+
+  /* Keyboard / assistive-tech activation. Pointer taps are handled above. */
   quickFab.onclick=e=>{
     e.stopPropagation();
     if(suppressQuickClick)return;
-    if(openedOnPointerDown){openedOnPointerDown=false;return;}
-    setQuickOpen(!quickOpen);
+    if(e.detail===0)setQuickOpen(!quickOpen);
   };
 
   document.addEventListener("pointerdown",e=>{
