@@ -61,20 +61,32 @@
   </section>
 
   <section id="sv" class="hide"></section>
-
-  <section id="logBox" class="hide" style="margin-top:10px">
-    <div class="panel visit-panel">
-      <div class="visit-head">
-        <div><div class="lbl">Been there</div><div class="visit-kicker">Rate it anytime · 1 nah → 5 go again</div></div>
-        <span class="visit-count" id="visitCount"></span>
-      </div>
-      <div id="logList"></div>
-    </div>
-  </section>
-
 </div>
 
-<button class="fab" id="openAdd" type="button" aria-label="Add a place">
+<div class="scrim history-scrim hide" id="historyScrim" role="dialog" aria-modal="true" aria-labelledby="historyTitle">
+  <div class="sheet history-sheet">
+    <div class="history-head">
+      <div>
+        <div class="lbl">Your places</div>
+        <h2 id="historyTitle">Been there</h2>
+      </div>
+      <button class="history-close" id="historyClose" type="button" aria-label="Close history">×</button>
+    </div>
+    <div class="history-empty hide" id="historyEmpty">Nothing here yet. Tap <b>Going</b> after a pick and it’ll show up here.</div>
+    <div id="logList"></div>
+  </div>
+</div>
+
+<div class="quick-actions" id="quickActions" aria-hidden="true">
+  <button class="quick-action quick-history" type="button" data-quick="history" aria-label="Open history">
+    <span class="quick-icon">↺</span><span>History</span>
+  </button>
+  <button class="quick-action quick-add" type="button" data-quick="add" aria-label="Add a place">
+    <span class="quick-icon">＋</span><span>Add place</span>
+  </button>
+</div>
+
+<button class="fab" id="quickFab" type="button" aria-label="Open quick actions" aria-expanded="false">
   <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
 </button>
 
