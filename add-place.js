@@ -13,6 +13,9 @@ function openSheet(){
    '<div class="sheet"><h2>Add a place</h2>'+
    '<div class="field"><label for="aName">Name</label>'+
    '<input id="aName" type="text" placeholder="Sing Swee Kee" autocomplete="off"></div>'+
+   '<div class="field"><label for="aArea">Area</label>'+
+   '<input id="aArea" type="text" list="areaList" placeholder="Civic District" autocomplete="off">'+
+   '<datalist id="areaList"></datalist></div>'+
    '<div class="two">'+
      '<div class="field"><label for="aLoc">Building</label>'+
      '<input id="aLoc" type="text" list="locList" placeholder="Funan" autocomplete="off">'+
@@ -34,8 +37,18 @@ function openSheet(){
    '<button class="big pop" id="aSave" type="button">Add</button></div></div>';
   document.body.appendChild(scrim);
 
-  $("locList").innerHTML=[...new Set(PLACES.map(x=>x.l))].map(v=>'<option value="'+v+'">').join("");
+  const areas=[...new Set(PLACES.map(placeArea))].sort(areaSort);
+  $("areaList").innerHTML=areas.map(v=>'<option value="'+v+'">').join("");
+  $("aArea").value=S.area||areas[0]||"Civic District";
   $("cuiList").innerHTML=[...new Set(PLACES.map(x=>x.c))].sort().map(v=>'<option value="'+v+'">').join("");
+
+  const refreshLocList=()=>{
+    const area=$("aArea").value.trim();
+    const options=[...new Set(PLACES.filter(x=>!area||placeArea(x)===area).map(x=>x.l))];
+    $("locList").innerHTML=options.map(v=>'<option value="'+v+'">').join("");
+  };
+  refreshLocList();
+  $("aArea").addEventListener("input",refreshLocList);
 
   let price=1;
   [1,2,3].forEach(n=>{
@@ -56,14 +69,16 @@ function openSheet(){
     const n=$("aName").value.trim();
     if(!n){$("aName").focus();return;}
     const c=$("aCui").value.trim()||"Mixed";
+    const area=$("aArea").value.trim()||S.area||"Civic District";
     const hm=v=>{const[a,b]=v.split(":").map(Number);return a+b/60;};
     const o=$("aOpen").value,sh=$("aShut").value;
-    const added={n,c,p:price,l:$("aLoc").value.trim()||"Unsorted",
+    const added={n,c,p:price,l:$("aLoc").value.trim()||"Unsorted",area,
       col:guessColour(c),note:$("aNote").value.trim(),w:"",
       h:(o&&sh)?{mf:[hm(o),hm(sh)]}:undefined,src:"user",user:true};
     PERSONAL_PLACES.push(added);
     PLACES.push(added);
     savePersonalPlaces();
+    S.area=area;S.loc.clear();
     buildFilters();pool();shut();
     const t=$("today0");
     if(t)t.insertAdjacentHTML("afterend",'<div class="reveal" id="aDone">'+n+' is in.</div>');
@@ -76,6 +91,7 @@ $("openAdd").onclick=openSheet;
 function pool(){
   const recent=S.log.slice(0,3).map(l=>l.n);
   S.base=PLACES.filter(p=>
+    (!S.area||placeArea(p)===S.area)&&
     (!S.loc.size||S.loc.has(p.l))&&(!S.price.size||S.price.has(p.p))&&
     (!S.cui.size||S.cui.has(p.c))&&
     (!S.extra.has("now")||state(p,new Date())==="open")&&
