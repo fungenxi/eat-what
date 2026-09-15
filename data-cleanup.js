@@ -41,10 +41,16 @@ function enrichMasterPlace(place){
   place.building=place.l;
   place.unit=hasUnit?rawLocation:null;
   place.locationHint=rawLocation&&!hasUnit?rawLocation:null;
+  place.address=place.address||null;
   place.colour=place.col;
   place.halalStatus=place.halal===true?"certified":"unknown";
   place.hours=place.h||null;
-  place.hoursSource={level:sourceLevel,checked:null,url:null};
+  place.hoursSource={
+    level:sourceLevel,
+    checked:place.hoursChecked||null,
+    url:place.hoursUrl||null,
+    label:place.hoursSourceLabel||null
+  };
   place.status="active";
   return place;
 }
@@ -87,9 +93,11 @@ function auditMasterPlaces(records){
     stallHours:records.filter(p=>p.hoursSource?.level==="stall").length,
     buildingHours:records.filter(p=>p.hoursSource?.level==="building").length,
     unknownHours:records.filter(p=>p.hoursSource?.level==="unknown").length,
+    recentlyCheckedHours:records.filter(p=>p.hoursSource?.checked).length,
     halalCertified:records.filter(p=>p.halalStatus==="certified").length,
     halalUnknown:records.filter(p=>p.halalStatus==="unknown").length,
     withUnit:records.filter(p=>p.unit).length,
+    withAddress:records.filter(p=>p.address).length,
     withLocationHint:records.filter(p=>p.locationHint).length
   };
 
