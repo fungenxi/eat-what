@@ -47,7 +47,7 @@
     }
   ];
 
-  let root=null,index=0,currentTarget=null;
+  let root=null,index=0,currentTarget=null,finalTimer=null;
 
   function seen(){
     try{return localStorage.getItem(STORAGE_KEY)==="done";}catch(_){return false;}
@@ -57,6 +57,9 @@
   }
 
   function blockScroll(e){e.preventDefault();}
+  function clearFinalTimer(){
+    if(finalTimer!==null){window.clearTimeout(finalTimer);finalTimer=null;}
+  }
 
   function buildRoot(){
     root=document.createElement("div");
@@ -154,6 +157,7 @@
 
   function show(){
     if(!root)return;
+    clearFinalTimer();
     const step=STEPS[index];
     prepare(step);
     const bubble=root.querySelector(".tour-bubble");
@@ -177,6 +181,10 @@
         if(!step.final)root.querySelector(".tour-next")?.focus({preventScroll:true});
       }));
     },80);
+
+    if(step.final){
+      finalTimer=window.setTimeout(finish,3000);
+    }
   }
 
   function next(){
@@ -187,6 +195,7 @@
   }
 
   function finish(){
+    clearFinalTimer();
     markSeen();
     if(typeof setQuickOpen==="function")setQuickOpen(false);
     const history=document.getElementById("historyScrim");
@@ -199,6 +208,7 @@
 
   function start(force=false){
     if(root||(!force&&seen()))return;
+    clearFinalTimer();
     index=0;
     document.documentElement.classList.add("tour-active");
     document.body.classList.add("tour-active");
