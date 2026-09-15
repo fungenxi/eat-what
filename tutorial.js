@@ -56,6 +56,8 @@
     try{localStorage.setItem(STORAGE_KEY,"done");}catch(_){}
   }
 
+  function blockScroll(e){e.preventDefault();}
+
   function buildRoot(){
     root=document.createElement("div");
     root.className="tour-root";
@@ -70,6 +72,12 @@
         '<div class="tour-actions"><button class="tour-skip" type="button">Skip</button><button class="tour-next" type="button">Next</button></div>'+
       '</div>';
     document.body.appendChild(root);
+
+    /* No scrolling/dragging the page while the walkthrough is open. */
+    root.addEventListener("wheel",blockScroll,{passive:false});
+    root.addEventListener("touchmove",blockScroll,{passive:false});
+
+    /* Outside the speech bubble advances; inside only the buttons act. */
     root.querySelector(".tour-hitblock").addEventListener("click",()=>{
       if(STEPS[index]?.final)finish();
       else next();
@@ -184,6 +192,7 @@
     const history=document.getElementById("historyScrim");
     if(history&&!history.classList.contains("hide")&&typeof closeHistory==="function")closeHistory();
     root?.remove();root=null;currentTarget=null;
+    document.documentElement.classList.remove("tour-active");
     document.body.classList.remove("tour-active");
     if(typeof go==="function")go(0);
   }
@@ -191,6 +200,7 @@
   function start(force=false){
     if(root||(!force&&seen()))return;
     index=0;
+    document.documentElement.classList.add("tour-active");
     document.body.classList.add("tour-active");
     buildRoot();
     show();
@@ -200,8 +210,8 @@
   window.addEventListener("resize",()=>{if(root)position();});
   window.addEventListener("keydown",e=>{
     if(!root)return;
+    if(["PageDown","PageUp","Home","End","ArrowUp","ArrowDown"].includes(e.key))e.preventDefault();
     if(e.key==="Escape")finish();
-    if(e.key==="ArrowRight")next();
   });
   window.setTimeout(()=>start(false),650);
 })();
