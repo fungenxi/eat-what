@@ -1,7 +1,8 @@
 /* Mobile resilience overrides. Keep the main visual language in styles.css. */
 
-/* Account for notches / home indicators on modern phones. */
+/* Account for notches / status bars / home indicators on modern phones. */
 body{
+  padding-top:calc(14px + env(safe-area-inset-top));
   padding-left:max(14px, env(safe-area-inset-left));
   padding-right:max(14px, env(safe-area-inset-right));
   padding-bottom:max(24px, calc(14px + env(safe-area-inset-bottom)));
@@ -46,7 +47,7 @@ body{
   letter-spacing:-.03em;
   line-height:1;
   cursor:pointer;
-  transform-origin:left center;
+  transform-origin:right center;
 }
 .mark:focus-visible{outline:2px solid var(--mustard);outline-offset:4px;border-radius:4px}
 .mark.brand-pop{animation:brandPop .28s var(--e)}
@@ -84,7 +85,7 @@ body{
 }
 
 @media (max-width:480px){
-  body{padding-top:12px}
+  body{padding-top:calc(12px + env(safe-area-inset-top))}
   .app{max-width:none}
 
   /* Preserve the segmented-line appearance while giving each segment a proper tap target. */
