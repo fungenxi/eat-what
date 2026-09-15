@@ -17,12 +17,18 @@ function openSheet(){
    '<input id="aArea" type="text" list="areaList" placeholder="CBD" autocomplete="off">'+
    '<datalist id="areaList"></datalist></div>'+
    '<div class="two">'+
-     '<div class="field"><label for="aLoc">Building</label>'+
+     '<div class="field"><label for="aLoc">Building / hawker centre</label>'+
      '<input id="aLoc" type="text" list="locList" placeholder="Funan" autocomplete="off">'+
      '<datalist id="locList"></datalist></div>'+
+     '<div class="field"><label for="aUnit">Unit / stall</label>'+
+     '<input id="aUnit" type="text" placeholder="02-84" autocomplete="off"></div>'+
+   '</div>'+
+   '<div class="two">'+
      '<div class="field"><label for="aCui">Cuisine</label>'+
      '<input id="aCui" type="text" list="cuiList" placeholder="Hainanese" autocomplete="off">'+
      '<datalist id="cuiList"></datalist></div>'+
+     '<div class="field"><label for="aAddress">Full address</label>'+
+     '<input id="aAddress" type="text" placeholder="335 Smith Street, Singapore 050335" autocomplete="off"></div>'+
    '</div>'+
    '<div class="field"><label>Budget</label><div class="chips" id="aPrice"></div></div>'+
    '<div class="two">'+
@@ -73,7 +79,7 @@ function openSheet(){
     const hm=v=>{const[a,b]=v.split(":").map(Number);return a+b/60;};
     const o=$("aOpen").value,sh=$("aShut").value;
     const added={n,c,p:price,l:$("aLoc").value.trim()||"Unsorted",area,
-      col:guessColour(c),note:$("aNote").value.trim(),w:"",
+      col:guessColour(c),note:$("aNote").value.trim(),w:$("aUnit").value.trim(),address:$("aAddress").value.trim()||null,
       h:(o&&sh)?{mf:[hm(o),hm(sh)]}:undefined,src:"user",user:true};
     PERSONAL_PLACES.push(added);
     PLACES.push(added);
@@ -113,6 +119,7 @@ function runQuickAction(action){
   setQuickOpen(false);
   if(action==="add")openSheet();
   if(action==="history"&&typeof openHistory==="function")openHistory();
+  if(action==="manage"&&typeof openManagePlaces==="function")openManagePlaces();
 }
 
 if(quickFab&&quickActions){
