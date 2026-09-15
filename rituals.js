@@ -29,21 +29,45 @@ function runRitual(k){
 function rColour(p){
   p.innerHTML='<div class="lbl big">Most common outfit colour in the room</div>';
   const g=document.createElement("div");g.className="sw";
+  const candidates=[...S.pool];
+
+  /* Colour is a social tiebreaker, not a restaurant attribute. Build equally-sized
+     overlapping groups from the current filtered pool so every outfit colour is viable. */
+  const hashName=name=>{
+    let h=2166136261;
+    for(let i=0;i<name.length;i++)h=Math.imul(h^name.charCodeAt(i),16777619);
+    return h>>>0;
+  };
+  const ordered=[...candidates].sort((a,b)=>hashName(a.n)-hashName(b.n)||a.n.localeCompare(b.n));
+  const groupSize=ordered.length?Math.min(ordered.length,Math.max(2,Math.ceil(ordered.length/4))):0;
+  const groups=new Map();
+  COLOURS.forEach((c,i)=>{
+    if(!ordered.length){groups.set(c.k,[]);return;}
+    const start=Math.floor(i*ordered.length/COLOURS.length);
+    const picks=[];
+    for(let j=0;j<groupSize;j++)picks.push(ordered[(start+j)%ordered.length]);
+    groups.set(c.k,picks);
+  });
+
   COLOURS.forEach(c=>{
     const b=document.createElement("button");b.type="button";
     b.style.background=c.hex;b.style.color=c.fg;b.style.borderColor=c.bd;
     b.setAttribute("aria-pressed","false");b.textContent=c.t;
+    b.disabled=!ordered.length;
     b.onclick=()=>{
       [...g.children].forEach(x=>{x.setAttribute("aria-pressed","false");
         x.style.borderColor=COLOURS.find(y=>y.t===x.textContent).bd;});
       b.setAttribute("aria-pressed","true");b.style.borderColor="var(--ink)";
-      const matchKeys=c.match||[c.k];
-      const m=S.pool.filter(x=>matchKeys.includes(x.col));let msg;
-      if(m.length>=2){S.pool=m;S.why=c.t.toLowerCase()+" won the room";
-        msg=c.t+" won the room. "+m.length+" places fit the colour mood.";}
-      else{S.why=c.t.toLowerCase()+" won, too few places matched";
-        msg=c.t+" won the room, but too few places matched. Everyone stays in.";}
-      paint();say(p,msg);
+      const m=groups.get(c.k)||[];
+      if(!m.length){
+        S.why="no places left after filtering";
+        paint();say(p,"No places left from your filters. Go back and widen them a bit.");
+        return;
+      }
+      S.pool=m;
+      S.why=c.t.toLowerCase()+" won the room";
+      const noun=m.length===1?"place":"places";
+      paint();say(p,c.t+" won the room. "+m.length+" "+noun+" make the cut.");
     };
     g.appendChild(b);
   });
