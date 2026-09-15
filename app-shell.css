@@ -1,0 +1,48 @@
+/* Installed-app launch cover. Browser visits stay unchanged. */
+.app-cover{
+  position:fixed;
+  inset:0;
+  z-index:500;
+  display:grid;
+  place-items:center;
+  background:var(--plum,#5B2A4E);
+  color:var(--cream,#FBF6EC);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .18s ease;
+}
+.app-cover.show{opacity:1}
+.app-cover.leaving{opacity:0}
+.app-cover-card{
+  display:grid;
+  justify-items:center;
+  gap:16px;
+  transform:translateY(8px) scale(.98);
+  animation:appCoverIn .32s var(--e,cubic-bezier(.2,.8,.3,1)) forwards;
+}
+.app-cover-icon{
+  width:112px;
+  height:112px;
+  border-radius:28px;
+  box-shadow:0 18px 42px rgba(0,0,0,.22);
+}
+.app-cover-name{
+  font-family:"Gabarito",system-ui,sans-serif;
+  font-size:30px;
+  font-weight:700;
+  letter-spacing:-.035em;
+  line-height:1;
+}
+.app-cover-sub{
+  margin-top:-7px;
+  font-family:"Gabarito",system-ui,sans-serif;
+  font-size:13px;
+  font-weight:500;
+  opacity:.68;
+}
+@keyframes appCoverIn{
+  to{transform:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .app-cover,.app-cover-card{transition:none;animation:none}
+}
