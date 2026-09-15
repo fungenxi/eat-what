@@ -70,7 +70,13 @@
         '<div class="tour-actions"><button class="tour-skip" type="button">Skip</button><button class="tour-next" type="button">Next</button></div>'+
       '</div>';
     document.body.appendChild(root);
-    root.querySelector(".tour-hitblock").addEventListener("click",next);
+    root.querySelector(".tour-hitblock").addEventListener("click",()=>{
+      if(STEPS[index]?.final)finish();
+      else next();
+    });
+    root.querySelector(".tour-bubble").addEventListener("click",()=>{
+      if(STEPS[index]?.final)finish();
+    });
     root.querySelector(".tour-skip").addEventListener("click",finish);
     root.querySelector(".tour-next").addEventListener("click",next);
   }
@@ -144,12 +150,14 @@
     prepare(step);
     const bubble=root.querySelector(".tour-bubble");
     const p=bubble.querySelector("p");
+    const actions=root.querySelector(".tour-actions");
     bubble.classList.toggle("final",Boolean(step.final));
     bubble.querySelector("h3").textContent=step.title;
     p.textContent=step.copy||"";
     p.hidden=!step.copy;
+    actions.hidden=Boolean(step.final);
     root.querySelector(".tour-skip").hidden=Boolean(step.final);
-    root.querySelector(".tour-next").textContent=step.final?"Ok can liao":"Next";
+    root.querySelector(".tour-next").textContent="Next";
 
     window.setTimeout(()=>{
       currentTarget=step.final?null:(step.target?step.target():null);
@@ -158,7 +166,7 @@
       }
       requestAnimationFrame(()=>requestAnimationFrame(()=>{
         position();
-        root.querySelector(".tour-next")?.focus({preventScroll:true});
+        if(!step.final)root.querySelector(".tour-next")?.focus({preventScroll:true});
       }));
     },80);
   }
