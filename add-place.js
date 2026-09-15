@@ -59,7 +59,7 @@ function openSheet(){
     $("aPrice").appendChild(b);
   });
 
-  const shut=()=>{scrim.remove();$("openAdd").focus();};
+  const shut=()=>{scrim.remove();$("quickFab")?.focus();};
   $("aCancel").onclick=shut;
   scrim.onclick=e=>{if(e.target===scrim)shut();};
   document.addEventListener("keydown",function esc(e){
@@ -86,7 +86,73 @@ function openSheet(){
   };
   $("aName").focus();
 }
-$("openAdd").onclick=openSheet;
+
+/* ---------- bottom-right quick actions ---------- */
+const quickFab=$("quickFab"),quickActions=$("quickActions");
+let quickOpen=false,draggingQuick=false,dragTarget=null,openedOnPointerDown=false,suppressQuickClick=false;
+
+function setQuickOpen(on){
+  quickOpen=on;
+  if(!quickFab||!quickActions)return;
+  quickActions.setAttribute("data-open",String(on));
+  quickActions.setAttribute("aria-hidden",String(!on));
+  quickFab.setAttribute("aria-expanded",String(on));
+  quickFab.setAttribute("data-open",String(on));
+  if(!on){
+    quickActions.querySelectorAll(".quick-action").forEach(b=>b.classList.remove("drag-over"));
+    dragTarget=null;
+  }
+}
+
+function runQuickAction(action){
+  setQuickOpen(false);
+  if(action==="add")openSheet();
+  if(action==="history"&&typeof openHistory==="function")openHistory();
+}
+
+if(quickFab&&quickActions){
+  quickActions.querySelectorAll("[data-quick]").forEach(b=>{
+    b.onclick=e=>{e.stopPropagation();runQuickAction(b.dataset.quick);};
+  });
+
+  quickFab.addEventListener("pointerdown",e=>{
+    openedOnPointerDown=!quickOpen;
+    if(openedOnPointerDown)setQuickOpen(true);
+    draggingQuick=true;dragTarget=null;
+    quickFab.setPointerCapture?.(e.pointerId);
+  });
+
+  quickFab.addEventListener("pointermove",e=>{
+    if(!draggingQuick||!quickOpen)return;
+    const hit=document.elementFromPoint(e.clientX,e.clientY)?.closest?.("[data-quick]");
+    quickActions.querySelectorAll(".quick-action").forEach(b=>b.classList.toggle("drag-over",b===hit));
+    dragTarget=hit||null;
+  });
+
+  quickFab.addEventListener("pointerup",e=>{
+    if(!draggingQuick)return;
+    draggingQuick=false;
+    if(dragTarget){
+      const action=dragTarget.dataset.quick;
+      suppressQuickClick=true;
+      runQuickAction(action);
+      setTimeout(()=>{suppressQuickClick=false;},0);
+    }
+    quickFab.releasePointerCapture?.(e.pointerId);
+  });
+
+  quickFab.addEventListener("pointercancel",()=>{draggingQuick=false;dragTarget=null;});
+  quickFab.onclick=e=>{
+    e.stopPropagation();
+    if(suppressQuickClick)return;
+    if(openedOnPointerDown){openedOnPointerDown=false;return;}
+    setQuickOpen(!quickOpen);
+  };
+
+  document.addEventListener("pointerdown",e=>{
+    if(quickOpen&&!quickActions.contains(e.target)&&e.target!==quickFab)setQuickOpen(false);
+  });
+}
 
 function pool(){
   const recent=S.log.slice(0,3).map(l=>l.n);
