@@ -62,6 +62,6 @@ if(brand){
 
 const flags=PLACES.filter(p=>p.check).length;
 
-buildFilters();pool();renderLog();go(1);
+buildFilters();pool();renderLog();go(0);
 updateTopTime();tickClock();
 setInterval(()=>{updateTopTime();tickClock();},30000);
