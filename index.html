@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Eat What?!</title>
+<meta name="theme-color" content="#5B2A4E">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Eat What?!">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="app-icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="app-icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DynaPuff:wght@600;700&family=Gabarito:wght@400;600;700;800;900&family=Lilita+One&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
@@ -16,8 +24,18 @@
 <link rel="stylesheet" href="filter-live.css">
 <link rel="stylesheet" href="tutorial.css">
 <link rel="stylesheet" href="typography.css">
+<link rel="stylesheet" href="app-shell.css">
 </head>
 <body>
+<div class="app-cover" id="appCover" hidden aria-hidden="true">
+  <div class="app-cover-card">
+    <img class="app-cover-icon" src="app-icon.svg" alt="">
+    <div class="app-cover-name">Eat What?!</div>
+    <div class="app-cover-sub">Today eat what?</div>
+  </div>
+</div>
+<script src="app-shell.js"></script>
+
 <div class="app">
 
   <div class="top">
