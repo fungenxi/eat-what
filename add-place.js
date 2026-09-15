@@ -14,11 +14,11 @@ function openSheet(){
    '<div class="field"><label for="aName">Name</label>'+
    '<input id="aName" type="text" placeholder="Sing Swee Kee" autocomplete="off"></div>'+
    '<div class="field"><label for="aArea">Area</label>'+
-   '<input id="aArea" type="text" list="areaList" placeholder="CBD" autocomplete="off">'+
+   '<input id="aArea" type="text" placeholder="Type any area" autocomplete="off">'+
    '<datalist id="areaList"></datalist></div>'+
    '<div class="two">'+
      '<div class="field"><label for="aLoc">Building / hawker centre</label>'+
-     '<input id="aLoc" type="text" list="locList" placeholder="Funan" autocomplete="off">'+
+     '<input id="aLoc" type="text" placeholder="Type any building / hawker centre" autocomplete="off">'+
      '<datalist id="locList"></datalist></div>'+
      '<div class="field"><label for="aUnit">Unit / stall</label>'+
      '<input id="aUnit" type="text" placeholder="02-84" autocomplete="off"></div>'+
