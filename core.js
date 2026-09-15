@@ -26,7 +26,7 @@ const ARROW=d=>'<svg '+S24+' style="transform:rotate('+d+'deg)"><path d="M12 19V
 const DIRS={"Funan":0,"Capitol":45,"Adelphi":90,"Raffles City":135,
   "Clarke Quay":270,"Nat Gallery":180,"Raffles Xchange":135};
 
-const HEADS=[["Narrow","it down"],["Ask","the room"],["Let fate","do it"]];
+const HEADS=[["Narrow","it down"],["Ask","the room"],["Let fate","decide"]];
 const BG=["var(--teal)","var(--plum)","var(--coral)"];
 
 const S={stage:1,price:new Set(),loc:new Set(),cui:new Set(),extra:new Set(),
@@ -41,13 +41,16 @@ const today=new Date().getDay();
 /* ---------- what time is it, and what does that rule out ---------- */
 const DAYS=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const SHORT=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const DAY_KEYS=["sun","mon","tue","wed","thu","fri","sat"];
 
 function hoursFor(pl,d){
   if(!pl.h)return undefined;                       // hours never confirmed
-  const g=d.getDay();
-  let h = g===0 ? (pl.h.sun!==undefined?pl.h.sun:pl.h.mf)
-        : g===6 ? (pl.h.sat!==undefined?pl.h.sat:pl.h.mf)
-        : pl.h.mf;
+  const g=d.getDay(),key=DAY_KEYS[g];
+  let h;
+  if(pl.h[key]!==undefined)h=pl.h[key];             // exact day overrides the generic weekday rule
+  else if(g>=1&&g<=5)h=pl.h.mf;
+  else if(g===6)h=pl.h.sat!==undefined?pl.h.sat:pl.h.mf;
+  else h=pl.h.sun!==undefined?pl.h.sun:pl.h.mf;
   if(h===null||h===undefined)return h;
   return Array.isArray(h[0])?h:[h];                // always a list of windows
 }
@@ -103,4 +106,3 @@ function drawToday(d){
     (bits?'<ul>'+bits+'</ul>':'')+'</div>';
   ["today0","today1"].forEach(id=>{const el=$(id);if(el)el.innerHTML=html;});
 }
-
