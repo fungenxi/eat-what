@@ -1,0 +1,121 @@
+/* Live filtering: make the current candidate set visible without overpowering the flow. */
+.filter-preview{
+  margin-top:10px;
+  padding:14px;
+  border-radius:18px;
+  background:rgba(251,246,236,.13);
+  color:var(--cream);
+  border:2px solid rgba(251,246,236,.16);
+}
+.filter-preview-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:10px;
+}
+.filter-preview-head b{
+  display:block;
+  font-size:16px;
+  font-weight:900;
+  line-height:1.05;
+}
+.filter-preview-head span{
+  display:block;
+  margin-top:3px;
+  font-size:11px;
+  font-weight:700;
+  opacity:.62;
+}
+.filter-option-list{
+  display:grid;
+  gap:6px;
+  max-height:330px;
+  overflow:auto;
+  padding-right:2px;
+  scrollbar-width:thin;
+}
+.filter-option{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 11px;
+  border-radius:12px;
+  background:var(--cream);
+  color:var(--ink);
+}
+.filter-option b{
+  min-width:0;
+  font-size:13px;
+  font-weight:850;
+  line-height:1.2;
+}
+.filter-option span{
+  flex:none;
+  max-width:48%;
+  text-align:right;
+  font-size:10px;
+  font-weight:700;
+  line-height:1.3;
+  opacity:.5;
+}
+.filter-preview-empty{
+  padding:12px;
+  border-radius:12px;
+  background:rgba(251,246,236,.09);
+  font-size:13px;
+  font-weight:750;
+  line-height:1.35;
+}
+
+.filter-context{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin:-8px 0 12px;
+  padding:10px 12px;
+  border-radius:14px;
+  background:rgba(251,246,236,.12);
+  border:1.5px solid rgba(251,246,236,.16);
+  color:var(--cream);
+}
+.filter-context-copy{min-width:0}
+.filter-context-copy b{
+  display:block;
+  font-size:13px;
+  font-weight:900;
+  line-height:1.1;
+}
+.filter-context-copy span{
+  display:block;
+  margin-top:3px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:10px;
+  font-weight:700;
+  opacity:.62;
+}
+.filter-context-edit{
+  flex:none;
+  min-height:32px;
+  padding:6px 10px;
+  border:1.5px solid rgba(251,246,236,.35);
+  border-radius:99px;
+  background:transparent;
+  color:var(--cream);
+  font:inherit;
+  font-size:11px;
+  font-weight:850;
+  cursor:pointer;
+}
+.filter-context-edit:active{transform:scale(.94)}
+.filter-context-edit:focus-visible{outline:2px solid var(--mustard);outline-offset:2px}
+
+@media (max-width:390px){
+  .filter-option{display:block}
+  .filter-option span{display:block;max-width:none;margin-top:3px;text-align:left}
+  .filter-option-list{max-height:300px}
+}
