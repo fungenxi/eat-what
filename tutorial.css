@@ -1,0 +1,39 @@
+/* Short first-run product tour. */
+body.tour-active{overflow:hidden}
+.tour-root{position:fixed;inset:0;z-index:200;pointer-events:none}
+.tour-hitblock{position:fixed;inset:0;z-index:200;pointer-events:auto;background:transparent}
+.tour-shade{position:fixed;z-index:201;background:rgba(10,8,12,.68);pointer-events:none;transition:all .2s var(--e)}
+.tour-ring{position:fixed;z-index:202;border:2px solid rgba(251,246,236,.92);border-radius:18px;box-shadow:0 0 0 3px rgba(255,194,46,.22);pointer-events:none;transition:all .2s var(--e)}
+.tour-bubble{
+  position:fixed;z-index:203;width:min(330px,calc(100vw - 28px));padding:16px 16px 14px;
+  border:0;border-radius:18px;background:var(--cream);color:var(--ink);
+  box-shadow:0 18px 46px rgba(0,0,0,.28);font-family:"Gabarito",sans-serif;
+  transform-origin:center;animation:tourPop .2s var(--e);pointer-events:auto
+}
+.tour-bubble::after{
+  content:"";position:absolute;width:16px;height:16px;background:var(--cream);transform:rotate(45deg)
+}
+.tour-bubble[data-side="below"]::after{top:-7px;left:var(--tail-x,50%);margin-left:-8px}
+.tour-bubble[data-side="above"]::after{bottom:-7px;left:var(--tail-x,50%);margin-left:-8px}
+.tour-bubble[data-side="center"]::after{display:none}
+.tour-copy h3{margin:0;font-size:19px;line-height:1.05;letter-spacing:-.02em}
+.tour-copy p{margin:7px 0 0;font-size:14px;line-height:1.32;font-weight:650}
+.tour-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:13px}
+.tour-skip,.tour-next{
+  border:0;background:transparent;color:var(--ink);font:inherit;font-size:12px;font-weight:850;cursor:pointer
+}
+.tour-skip{opacity:.46;padding:7px 0}
+.tour-next{margin-left:auto;padding:8px 11px;border-radius:99px;background:var(--ink);color:var(--cream)}
+.tour-next:active,.tour-skip:active{transform:scale(.96)}
+.tour-next:focus-visible,.tour-skip:focus-visible{outline:3px solid var(--mustard);outline-offset:2px}
+.tour-bubble.final{width:auto;min-width:180px;text-align:center;padding:18px 22px}
+.tour-bubble.final .tour-actions{justify-content:center;margin-top:12px}
+.tour-bubble.final .tour-next{margin:0}
+@keyframes tourPop{from{opacity:0;transform:translateY(6px) scale(.97)}to{opacity:1;transform:none}}
+@media (max-width:390px){
+  .tour-bubble{width:calc(100vw - 24px);padding:15px 15px 13px}
+  .tour-copy h3{font-size:18px}.tour-copy p{font-size:13px}
+}
+@media (prefers-reduced-motion:reduce){
+  .tour-bubble{animation:none}.tour-shade,.tour-ring{transition:none}
+}
