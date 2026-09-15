@@ -38,7 +38,7 @@ function enrichMasterPlace(place){
   place.cuisine=place.c;
   place.type=typeFromCurrentCuisine(place.c);
   place.priceTier=place.p;
-  place.area=place.area||"Civic District";
+  place.area=place.area==="Civic District"?"CBD":(place.area||"CBD");
   place.building=place.l;
   place.unit=hasUnit?rawLocation:null;
   place.locationHint=rawLocation&&!hasUnit?rawLocation:null;
