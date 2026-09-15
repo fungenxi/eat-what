@@ -14,14 +14,14 @@
 <div class="app">
 
   <div class="top">
-    <div class="mark">Eat What?!</div>
+    <button class="mark" id="brandName" type="button" aria-label="Change the Eat What name" aria-live="polite" title="Tap me">Eat What?!</button>
     <div class="meta"><b id="clock"></b></div>
   </div>
 
   <nav class="nav" id="nav">
     <button data-go="0" aria-label="Narrow it down"></button>
     <button data-go="1" aria-label="Ask the room"></button>
-    <button data-go="2" aria-label="Let fate do it"></button>
+    <button data-go="2" aria-label="Let fate decide"></button>
   </nav>
 
   <section id="s0" class="hide">
@@ -45,12 +45,12 @@
     <div id="rRun" class="hide" style="margin-top:10px"></div>
     <div class="steps">
       <button class="step" data-next="0">Back</button>
-      <button class="step fwd" data-next="2">Let fate do it</button>
+      <button class="step fwd" data-next="2">Let fate decide</button>
     </div>
   </section>
 
   <section id="s2" class="hide">
-    <h1 class="head">Let fate <em>do it</em></h1>
+    <h1 class="head">Let fate <em>decide</em></h1>
     <div id="mPick"></div>
     <div id="mRun" class="hide" style="margin-top:10px"></div>
     <div class="steps">
