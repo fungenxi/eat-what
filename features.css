@@ -1,0 +1,64 @@
+/* Playful brand switcher + Been there rating UI. */
+
+/* Each language gets its own personality while keeping the same compact wordmark footprint. */
+.mark[data-brand="eat"]{
+  font-family:"Bungee Shade","Gabarito",sans-serif;
+  font-size:17px;
+  letter-spacing:.01em;
+}
+.mark[data-brand="jiak"]{
+  font-family:"Bungee","Gabarito",sans-serif;
+  font-size:16px;
+  letter-spacing:.005em;
+  transform:rotate(-1deg);
+}
+.mark[data-brand="makan"]{
+  font-family:"Baloo 2","Gabarito",sans-serif;
+  font-size:21px;
+  font-weight:800;
+  letter-spacing:-.025em;
+  transform:rotate(.5deg);
+}
+.mark[data-brand="chi"]{
+  font-family:"ZCOOL KuaiLe","Noto Sans SC","Gabarito",sans-serif;
+  font-size:21px;
+  font-weight:400;
+  letter-spacing:.02em;
+  transform:rotate(-.5deg);
+}
+
+/* Been there / rating history. */
+.visit-panel{padding-bottom:8px}
+.visit-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:4px}
+.visit-head .lbl{margin-bottom:2px}
+.visit-kicker{font-size:12px;font-weight:650;line-height:1.3;opacity:.48}
+.visit-count{flex:none;font-size:11px;font-weight:850;line-height:1;padding:7px 9px;border-radius:99px;background:rgba(24,20,25,.07);color:var(--ink)}
+
+.visit-card{padding:12px 0;border-bottom:2px solid rgba(24,20,25,.08)}
+.visit-card:last-child{border-bottom:0;padding-bottom:4px}
+.visit-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.visit-copy{min-width:0}
+.visit-copy b{display:block;font-size:15px;line-height:1.15;overflow-wrap:anywhere}
+.visit-meta{display:block;margin-top:3px;font-size:11px;font-weight:700;opacity:.46}
+.visit-score{flex:none;font-size:11px;font-weight:900;line-height:1;padding:6px 8px;border-radius:99px;background:var(--ink);color:var(--cream)}
+.visit-score.unrated{background:rgba(24,20,25,.08);color:var(--ink)}
+
+.rating-scale{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:10px}
+.rating-btn{min-width:0;min-height:40px;border:2px solid rgba(24,20,25,.12);border-radius:12px;background:transparent;color:var(--ink);font:inherit;font-size:15px;font-weight:900;cursor:pointer;transition:transform .11s var(--e),background .15s var(--e),border-color .15s var(--e)}
+.rating-btn:active{transform:scale(.9) rotate(-2deg)}
+.rating-btn[aria-pressed="true"]{background:var(--mustard);border-color:var(--ink);transform:translateY(-2px) rotate(-1deg)}
+.rating-btn:focus-visible{outline:3px solid var(--bg);outline-offset:2px}
+.rating-caption{min-height:17px;margin-top:6px;font-size:11px;font-weight:800;opacity:.6;text-align:right}
+
+@media (max-width:390px){
+  .mark[data-brand="eat"]{font-size:15px}
+  .mark[data-brand="jiak"]{font-size:14px}
+  .mark[data-brand="makan"],.mark[data-brand="chi"]{font-size:19px}
+  .visit-kicker{max-width:230px}
+  .rating-btn{min-height:38px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .rating-btn,.mark{transition:none!important}
+  .rating-btn[aria-pressed="true"]{transform:none}
+}
