@@ -1,169 +1,144 @@
-/* Small hand-drawn accent system: seasoning, not the whole meal. */
-.brand-doodle{
+/* Decorative accents now live on section titles only. */
+.title-motion{
   position:relative;
-  display:inline-flex;
-  align-items:center;
-  min-height:32px;
-  padding:0 4px 7px 2px;
-  isolation:isolate;
+  width:max-content;
+  max-width:100%;
+  margin-left:auto;
+  margin-right:auto;
+  overflow:visible;
 }
-.brand-doodle .mark{
-  position:relative;
-  z-index:2;
-  border:0;
-  padding:0;
-  background:transparent;
-  color:inherit;
-  cursor:pointer;
-}
-.brand-underline{
+.title-copy{position:relative;z-index:2;display:inline-block}
+.title-fate .fate-word{color:var(--cream)!important}
+
+.title-doodle{
   position:absolute;
   z-index:1;
-  left:0;
-  right:2px;
-  bottom:1px;
-  width:100%;
-  height:10px;
   overflow:visible;
   pointer-events:none;
-}
-.brand-underline path{
   fill:none;
-  stroke:currentColor;
-  stroke-width:2.4;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-  stroke-dasharray:180;
-  stroke-dashoffset:0;
-  opacity:.72;
-}
-.brand-sparkles{
-  position:absolute;
-  z-index:3;
-  right:-14px;
-  top:-8px;
-  width:24px;
-  height:24px;
-  overflow:visible;
-  pointer-events:none;
-  color:var(--mustard);
-}
-.brand-sparkles path{
-  fill:none;
-  stroke:currentColor;
-  stroke-width:2;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-  transform-origin:center;
-}
-.mark.brand-pop ~ .brand-underline path{animation:doodleDraw .34s var(--e)}
-.mark.brand-pop ~ .brand-sparkles .spark-big{animation:sparkPop .34s var(--e)}
-.mark.brand-pop ~ .brand-sparkles .spark-small{animation:sparkPop .34s .06s var(--e) both}
-@keyframes doodleDraw{from{stroke-dashoffset:180;opacity:.2}to{stroke-dashoffset:0;opacity:.72}}
-@keyframes sparkPop{0%{opacity:0;transform:scale(.25) rotate(-18deg)}65%{opacity:1;transform:scale(1.16) rotate(5deg)}100%{opacity:1;transform:scale(1)}}
-
-/* Winner = the main celebration moment. */
-.winner-doodle{
-  position:relative;
-  isolation:isolate;
-  padding:13px 4px 5px;
-  margin:-8px -4px 3px;
-}
-.winner-doodle .winner{position:relative;z-index:2;margin-bottom:9px}
-.winner-burst{
-  position:absolute;
-  z-index:1;
-  inset:-2px -9px auto;
-  width:calc(100% + 18px);
-  height:72px;
-  color:var(--ink);
-  pointer-events:none;
-  overflow:visible;
-}
-.winner-burst path{
-  fill:none;
-  stroke:currentColor;
-  stroke-width:2.25;
-  stroke-linecap:round;
-  opacity:.48;
-  stroke-dasharray:24;
-  animation:burstDraw .42s var(--e) both;
-}
-.winner-burst path:nth-child(2n){animation-delay:.035s}
-.winner-burst path:nth-child(3n){animation-delay:.07s}
-@keyframes burstDraw{from{stroke-dashoffset:24;opacity:0}to{stroke-dashoffset:0;opacity:.48}}
-.winner-spark{
-  position:absolute;
-  z-index:3;
-  width:16px;
-  height:16px;
-  color:var(--coral);
-  pointer-events:none;
-  animation:sparkPop .36s .12s var(--e) both;
-}
-.winner-spark.one{right:5px;top:2px;transform:rotate(8deg)}
-.winner-spark.two{left:9px;bottom:0;color:var(--teal);animation-delay:.18s}
-.winner-spark path{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
-
-/* NEW should feel like a tiny hand-applied sticker, not a banner. */
-.new-tag{
-  display:inline-block;
-  vertical-align:middle;
-  margin-left:9px;
-  padding:4px 7px 3px;
-  border:2px solid var(--ink);
-  border-radius:45% 55% 48% 52% / 54% 47% 53% 46%;
-  background:var(--coral);
-  color:#fff;
-  font-family:"Gabarito",sans-serif;
-  font-size:10px;
-  font-weight:900;
-  line-height:1;
-  letter-spacing:.08em;
-  transform:rotate(-3deg) translateY(-3px);
-  box-shadow:2px 2px 0 var(--ink);
-  animation:newSticker .34s .1s var(--e) both;
-}
-@keyframes newSticker{from{opacity:0;transform:rotate(-8deg) translateY(-1px) scale(.65)}to{opacity:1;transform:rotate(-3deg) translateY(-3px) scale(1)}}
-
-/* Empty history: one tiny bowl doodle, then get out of the way. */
-.history-empty{
-  position:relative;
-  overflow:hidden;
-}
-.history-empty-art{
-  display:block;
-  width:62px;
-  height:48px;
-  margin:0 auto 10px;
-  color:var(--ink);
-  opacity:.72;
-}
-.history-empty-art .bowl-line,
-.history-empty-art .steam-line{
-  fill:none;
-  stroke:currentColor;
+  stroke:var(--mustard);
   stroke-width:2.2;
   stroke-linecap:round;
   stroke-linejoin:round;
 }
-.history-empty-art .accent{fill:var(--mustard);stroke:currentColor;stroke-width:2}
-.history-empty-copy{text-align:center}
-.history-empty:not(.hide) .steam-one{animation:steamWobble 1.8s ease-in-out infinite alternate}
-.history-empty:not(.hide) .steam-two{animation:steamWobble 1.8s .25s ease-in-out infinite alternate}
-@keyframes steamWobble{from{transform:translateX(-1px);opacity:.38}to{transform:translateX(1.5px);opacity:.78}}
+.title-underline{width:104px;height:16px;right:0;bottom:-9px}
+.title-spark{width:25px;height:25px;right:-22px;top:-8px}
+.title-swoop{width:103px;height:18px;right:-2px;bottom:-10px}
 
-/* Rating feedback gets a tiny tactile pop. */
+.title-motion.title-pop .title-copy{animation:titleBounce .42s var(--e) both}
+.title-motion.title-pop .title-underline path,
+.title-motion.title-pop .title-swoop path{
+  stroke-dasharray:140;
+  stroke-dashoffset:140;
+  animation:titleDraw .46s .05s var(--e) forwards;
+}
+.title-motion.title-pop .title-spark .spark-a{animation:titleSpark .34s .08s var(--e) both}
+.title-motion.title-pop .title-spark .spark-b{animation:titleSpark .34s .14s var(--e) both}
+
+@keyframes titleBounce{
+  0%{opacity:0;transform:translateY(8px) scale(.97)}
+  65%{opacity:1;transform:translateY(-2px) scale(1.015)}
+  100%{opacity:1;transform:none}
+}
+@keyframes titleDraw{to{stroke-dashoffset:0}}
+@keyframes titleSpark{
+  0%{opacity:0;transform:scale(.25) rotate(-15deg)}
+  70%{opacity:1;transform:scale(1.14) rotate(4deg)}
+  100%{opacity:1;transform:scale(1)}
+}
+
+/* Winner reveal: clean motion, no doodles. */
+.winner-reveal{
+  position:relative;
+  isolation:isolate;
+  margin:2px 0 12px;
+  padding-top:4px;
+}
+.winner-reveal::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  left:50%;
+  top:48%;
+  width:190px;
+  height:190px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.34) 0 24%,rgba(255,255,255,.13) 25% 45%,transparent 46%);
+  transform:translate(-50%,-50%) scale(.35);
+  opacity:0;
+  animation:winnerPulse .7s var(--e) forwards;
+}
+.winner-kicker{
+  display:inline-flex;
+  align-items:center;
+  min-height:25px;
+  padding:5px 9px 4px;
+  margin-bottom:8px;
+  border-radius:99px;
+  background:var(--ink);
+  color:var(--cream);
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.12em;
+  line-height:1;
+  opacity:0;
+  transform:translateY(10px) scale(.8);
+  animation:winnerKicker .38s .08s var(--e) forwards;
+}
+.winner-reveal .winner{
+  margin:0;
+  opacity:0;
+  transform:translateY(14px) scale(.91);
+  transform-origin:left bottom;
+  animation:winnerPop .48s .12s cubic-bezier(.18,.9,.28,1.22) forwards;
+}
+@keyframes winnerPulse{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.35)}
+  45%{opacity:1}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.18)}
+}
+@keyframes winnerKicker{
+  0%{opacity:0;transform:translateY(10px) scale(.8)}
+  70%{opacity:1;transform:translateY(-2px) scale(1.04)}
+  100%{opacity:1;transform:none}
+}
+@keyframes winnerPop{
+  0%{opacity:0;transform:translateY(14px) scale(.91)}
+  72%{opacity:1;transform:translateY(-2px) scale(1.025)}
+  100%{opacity:1;transform:none}
+}
+
+/* Keep NEW clean and legible. */
+.new-tag{
+  display:inline-flex;
+  align-items:center;
+  vertical-align:middle;
+  margin-left:8px;
+  padding:4px 7px;
+  border-radius:99px;
+  background:var(--coral);
+  color:#fff;
+  font-family:"Gabarito",sans-serif;
+  font-size:9px;
+  font-weight:900;
+  line-height:1;
+  letter-spacing:.08em;
+  transform:translateY(-4px);
+}
+
+/* Rating feedback stays tactile but not decorative. */
 .star-unit[data-fill="100"] .star-fill,
-.star-unit[data-fill="50"] .star-fill{animation:starDoodlePop .2s var(--e)}
-@keyframes starDoodlePop{0%{transform:scale(.72) rotate(-7deg)}75%{transform:scale(1.1) rotate(2deg)}100%{transform:scale(1)}}
+.star-unit[data-fill="50"] .star-fill{animation:starPop .18s var(--e)}
+@keyframes starPop{0%{transform:scale(.82)}75%{transform:scale(1.08)}100%{transform:scale(1)}}
 
 @media (max-width:390px){
-  .brand-sparkles{right:-10px;top:-6px;width:21px;height:21px}
-  .winner-burst{height:64px}
-  .new-tag{font-size:9px;margin-left:6px}
+  .title-underline{width:94px}
+  .title-spark{right:-16px;width:22px;height:22px}
+  .title-swoop{width:94px}
+  .new-tag{font-size:8px;margin-left:6px}
 }
 
 @media (prefers-reduced-motion:reduce){
-  .brand-underline path,.brand-sparkles path,.winner-burst path,.winner-spark,.new-tag,.history-empty-art path,.star-fill{animation:none!important}
+  .title-motion .title-copy,.title-doodle path,.winner-reveal::before,.winner-kicker,.winner-reveal .winner,.star-fill{animation:none!important}
+  .winner-kicker,.winner-reveal .winner{opacity:1;transform:none}
 }
