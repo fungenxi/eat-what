@@ -14,7 +14,7 @@ function openSheet(){
    '<div class="field"><label for="aName">Name</label>'+
    '<input id="aName" type="text" placeholder="Sing Swee Kee" autocomplete="off"></div>'+
    '<div class="field"><label for="aArea">Area</label>'+
-   '<input id="aArea" type="text" list="areaList" placeholder="Civic District" autocomplete="off">'+
+   '<input id="aArea" type="text" list="areaList" placeholder="CBD" autocomplete="off">'+
    '<datalist id="areaList"></datalist></div>'+
    '<div class="two">'+
      '<div class="field"><label for="aLoc">Building</label>'+
@@ -37,13 +37,13 @@ function openSheet(){
    '<button class="big pop" id="aSave" type="button">Add</button></div></div>';
   document.body.appendChild(scrim);
 
-  const areas=[...new Set(PLACES.map(placeArea))].sort(areaSort);
+  const areas=[...new Set([...AREA_OPTIONS,...PLACES.map(placeArea)])].sort(areaSort);
   $("areaList").innerHTML=areas.map(v=>'<option value="'+v+'">').join("");
-  $("aArea").value=S.area||areas[0]||"Civic District";
+  $("aArea").value=S.area||areas[0]||"CBD";
   $("cuiList").innerHTML=[...new Set(PLACES.map(x=>x.c))].sort().map(v=>'<option value="'+v+'">').join("");
 
   const refreshLocList=()=>{
-    const area=$("aArea").value.trim();
+    const area=normalizeAreaName($("aArea").value.trim());
     const options=[...new Set(PLACES.filter(x=>!area||placeArea(x)===area).map(x=>x.l))];
     $("locList").innerHTML=options.map(v=>'<option value="'+v+'">').join("");
   };
@@ -69,7 +69,7 @@ function openSheet(){
     const n=$("aName").value.trim();
     if(!n){$("aName").focus();return;}
     const c=$("aCui").value.trim()||"Mixed";
-    const area=$("aArea").value.trim()||S.area||"Civic District";
+    const area=normalizeAreaName($("aArea").value.trim()||S.area||"CBD");
     const hm=v=>{const[a,b]=v.split(":").map(Number);return a+b/60;};
     const o=$("aOpen").value,sh=$("aShut").value;
     const added={n,c,p:price,l:$("aLoc").value.trim()||"Unsorted",area,
