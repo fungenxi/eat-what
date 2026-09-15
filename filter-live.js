@@ -55,7 +55,11 @@
     if(!count){
       const empty=document.createElement("div");
       empty.className="filter-preview-empty";
-      empty.textContent="No places match these filters. Try removing one.";
+      empty.innerHTML='<svg class="filter-empty-art" viewBox="0 0 64 48" aria-hidden="true">'+
+        '<ellipse cx="31" cy="27" rx="18" ry="11"/><ellipse cx="31" cy="27" rx="10" ry="6"/>'+
+        '<path d="M8 10v25M4 10v9M12 10v9M52 10c5 6 5 12 0 17v8"/>'+
+        '<circle class="crumb" cx="25" cy="25" r="1.7"/><circle class="crumb" cx="35" cy="29" r="1.4"/>'+
+        '</svg><span class="empty-copy">No places match these filters. Try removing one.</span>';
       mount.appendChild(empty);
       return;
     }
