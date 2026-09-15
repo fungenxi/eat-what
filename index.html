@@ -19,6 +19,8 @@
 
   <div class="top">
     <button class="mark" id="brandName" data-brand="eat" type="button" aria-label="Change the Eat What name" aria-live="polite" title="Tap me">Eat What?!</button>
+    <time class="top-time" id="topTime" aria-label="Current day and time"></time>
+    <div class="brand-fx-layer" id="brandFxLayer" aria-hidden="true"></div>
   </div>
 
   <nav class="nav" id="nav">
@@ -92,7 +94,15 @@
         <button class="history-close" id="historyClose" type="button" aria-label="Close history">×</button>
       </div>
     </div>
-    <div class="history-empty hide" id="historyEmpty">Nothing here yet.</div>
+    <div class="history-empty hide" id="historyEmpty">
+      <svg class="history-empty-art" viewBox="0 0 64 48" aria-hidden="true">
+        <path class="steam-line steam-one" d="M24 14c-5-5 4-7 0-12"/>
+        <path class="steam-line steam-two" d="M38 14c5-5-4-7 0-12"/>
+        <path class="accent" d="M9 25c4-5 13-8 23-8s19 3 23 8l-5 12c-4 6-12 9-18 9s-14-3-18-9L9 25Z"/>
+        <path class="bowl-line" d="M11 25c8 4 34 4 42 0M18 38c8 3 20 3 28 0"/>
+      </svg>
+      <div class="history-empty-copy">Nothing here yet.</div>
+    </div>
     <div id="logList" class="history-list"></div>
   </div>
 </section>
