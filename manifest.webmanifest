@@ -1,0 +1,19 @@
+{
+  "name": "Eat What?!",
+  "short_name": "Eat What?!",
+  "description": "Cannot decide what to eat? Narrow it down, ask the room, or let fate decide.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#5B2A4E",
+  "theme_color": "#5B2A4E",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
