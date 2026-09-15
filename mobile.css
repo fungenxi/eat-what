@@ -13,6 +13,50 @@ body{
   overflow-wrap:anywhere;
 }
 
+/* The app name is intentionally tappable. Keep it visually identical to the old wordmark. */
+.mark{
+  appearance:none;
+  -webkit-appearance:none;
+  border:0;
+  padding:0;
+  margin:0;
+  background:transparent;
+  color:inherit;
+  font:inherit;
+  font-weight:900;
+  font-size:18px;
+  letter-spacing:-.03em;
+  line-height:1;
+  cursor:pointer;
+  transform-origin:left center;
+}
+.mark:focus-visible{outline:2px solid var(--mustard);outline-offset:4px;border-radius:4px}
+.mark.brand-pop{animation:brandPop .28s var(--e)}
+@keyframes brandPop{
+  0%{opacity:.45;transform:translateY(2px) scale(.93) rotate(-2deg)}
+  65%{opacity:1;transform:translateY(-1px) scale(1.06) rotate(1deg)}
+  100%{transform:none}
+}
+
+/* Point the way count + Throw fingers explanation. */
+.dirs button span{display:block;min-width:0}
+.dirs button small{display:block;margin-top:3px;font-size:11px;font-weight:700;opacity:.52}
+.finger-rule{
+  margin:-2px 0 12px;
+  font-size:13px;
+  line-height:1.35;
+  font-weight:650;
+  opacity:.62;
+}
+.finger-result{
+  min-height:21px;
+  margin:-2px 0 12px;
+  font-size:13px;
+  line-height:1.35;
+  font-weight:800;
+  opacity:.72;
+}
+
 .fab{
   bottom:max(22px, calc(14px + env(safe-area-inset-bottom)));
 }
