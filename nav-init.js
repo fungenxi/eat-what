@@ -21,18 +21,6 @@ function go(n){
 document.querySelectorAll("#nav button").forEach(b=>b.onclick=()=>go(+b.dataset.go));
 document.querySelectorAll("[data-next]").forEach(b=>b.onclick=()=>go(+b.dataset.next));
 
-/* ---------- top day + time ---------- */
-function updateTopTime(){
-  const el=$("topTime");
-  if(!el)return;
-  const d=new Date();
-  const day=d.toLocaleDateString("en-SG",{weekday:"short"});
-  const time=d.toLocaleTimeString("en-SG",{hour:"numeric",minute:"2-digit"}).replace(/\s/g,"").toLowerCase();
-  el.textContent=day+" · "+time;
-  el.dateTime=d.toISOString();
-  el.setAttribute("aria-label",day+", "+time);
-}
-
 /* ---------- playful app-name switcher ---------- */
 const BRAND_NAMES=[
   {text:"Eat What?!",key:"eat"},
@@ -63,5 +51,5 @@ if(brand){
 const flags=PLACES.filter(p=>p.check).length;
 
 buildFilters();pool();renderLog();go(0);
-updateTopTime();tickClock();
-setInterval(()=>{updateTopTime();tickClock();},30000);
+tickClock();
+setInterval(tickClock,30000);
