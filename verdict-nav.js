@@ -15,6 +15,36 @@ function hoursBadge(pl){
     (m!==null&&m<=45?'closes in '+m+' minutes':line)+'</div>';
 }
 
+function hoursForDayIndex(pl,dayIndex){
+  if(!pl.h)return undefined;
+  const keys=["sun","mon","tue","wed","thu","fri","sat"],key=keys[dayIndex];
+  if(pl.h[key]!==undefined)return pl.h[key];
+  if(dayIndex>=1&&dayIndex<=5)return pl.h.mf;
+  if(dayIndex===6)return pl.h.sat!==undefined?pl.h.sat:pl.h.mf;
+  return pl.h.sun!==undefined?pl.h.sun:pl.h.mf;
+}
+
+function compactHours(value){
+  if(value===undefined)return "Not confirmed";
+  if(value===null)return "Closed";
+  const windows=Array.isArray(value[0])?value:[value];
+  return windows.map(w=>fmtT(w[0])+"–"+fmtT(w[1])).join(", ");
+}
+
+function weeklyHoursHtml(pl){
+  const order=[[1,"Mon"],[2,"Tue"],[3,"Wed"],[4,"Thu"],[5,"Fri"],[6,"Sat"],[0,"Sun"]];
+  const rows=order.map(([day,label])=>'<div class="hours-row"><span>'+label+'</span><b>'+compactHours(hoursForDayIndex(pl,day))+'</b></div>').join("");
+  const checked=pl.hoursChecked?new Date(pl.hoursChecked+"T00:00:00").toLocaleDateString("en-SG",{day:"numeric",month:"short",year:"numeric"}):null;
+  const source=[checked?"Checked "+checked:null,pl.hoursSourceLabel||null].filter(Boolean).join(" · ");
+  return '<details class="place-info hours-week"><summary><span>Opening hours</span><strong>See full week</strong></summary>'+rows+(source?'<small>'+source+'</small>':'')+'</details>';
+}
+
+function locationHtml(pl){
+  const where=[pl.l,pl.w].filter(Boolean).join(" · ");
+  const mapLink=pl.address?'<a class="detail-link" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(pl.address)+'" target="_blank" rel="noopener">Open in Maps ↗</a>':'';
+  return '<div class="place-info"><div class="detail-label">Find it</div><b>'+where+'</b>'+(pl.address?'<span>'+pl.address+'</span>':'<span>Full address not recorded yet.</span>')+mapLink+'</div>';
+}
+
 function win(pl,how){
   document.body.style.setProperty("--bg","var(--mustard)");
   document.querySelector(".mark").style.color="var(--ink)";
@@ -25,7 +55,7 @@ function win(pl,how){
   v.innerHTML='<div class="winner">'+pl.n+(pl.new?'<span class="new-tag">NEW</span>':'')+'</div>'+
     '<div class="facts"><span class="fact">'+pl.l+(pl.w?" "+pl.w:"")+'</span>'+
     '<span class="fact open">'+pl.c+'</span><span class="fact open">'+$$(pl.p)+'</span></div>'+
-    hoursBadge(pl)+
+    hoursBadge(pl)+locationHtml(pl)+weeklyHoursHtml(pl)+
     (specialToday(pl,new Date())?'<div class="heads">'+specialToday(pl,new Date())+'.</div>':'')+
     (pl.note?'<div class="heads">'+pl.note+'</div>':'')+
     (S.why?'<div class="heads">Because '+S.why+'.</div>':'')+
