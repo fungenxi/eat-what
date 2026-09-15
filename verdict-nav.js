@@ -100,13 +100,29 @@ function visitDate(ts){
   return d.toLocaleDateString("en-SG",{day:"numeric",month:"short"});
 }
 
+function openHistory(){
+  renderLog();
+  const scrim=$("historyScrim");
+  if(!scrim)return;
+  scrim.classList.remove("hide");
+  document.body.classList.add("modal-open");
+  $("historyClose")?.focus();
+}
+
+function closeHistory(){
+  const scrim=$("historyScrim");
+  if(!scrim)return;
+  scrim.classList.add("hide");
+  document.body.classList.remove("modal-open");
+  $("quickFab")?.focus();
+}
+
 function renderLog(){
   normalizeHistory();
-  const box=$("logBox"),list=$("logList"),count=$("visitCount");
-  if(!box||!list)return;
-  box.classList.toggle("hide",!S.log.length);
-  if(count)count.textContent=S.log.length+" "+(S.log.length===1?"place":"places");
-  list.innerHTML=S.log.slice(0,8).map((l,index)=>{
+  const list=$("logList"),empty=$("historyEmpty");
+  if(!list)return;
+  if(empty)empty.classList.toggle("hide",S.log.length>0);
+  list.innerHTML=S.log.map((l,index)=>{
     const rating=Number(l.rating)||0;
     const bits=[];
     if((Number(l.visits)||1)>1)bits.push((Number(l.visits)||1)+" visits");
@@ -120,9 +136,18 @@ function renderLog(){
       '<div class="visit-top"><div class="visit-copy"><b>'+l.n+'</b><span class="visit-meta">'+bits.join(" · ")+'</span></div>'+
       '<span class="visit-score '+(rating?'':'unrated')+'">'+(rating?rating+"/5":"Rate")+'</span></div>'+
       '<div class="rating-scale" role="group" aria-label="Rate '+l.n+' out of 5">'+buttons+'</div>'+
-      '<div class="rating-caption">'+(rating?rating+"/5 · "+RATING_WORDS[rating]:"How was it?")+'</div></div>';
+      '<div class="rating-caption">'+(rating?RATING_WORDS[rating]:"How was it?")+'</div></div>';
   }).join("");
   list.querySelectorAll(".rating-btn").forEach(b=>{
     b.onclick=()=>rateVisit(Number(b.dataset.visit),Number(b.dataset.rating));
+  });
+}
+
+const historyScrim=$("historyScrim");
+if(historyScrim){
+  $("historyClose").onclick=closeHistory;
+  historyScrim.onclick=e=>{if(e.target===historyScrim)closeHistory();};
+  document.addEventListener("keydown",e=>{
+    if(e.key==="Escape"&&!historyScrim.classList.contains("hide"))closeHistory();
   });
 }
