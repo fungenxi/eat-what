@@ -27,7 +27,7 @@ function runRitual(k){
 }
 
 function rColour(p){
-  p.innerHTML='<div class="lbl big">Most common colour in the room</div>';
+  p.innerHTML='<div class="lbl big">Most common outfit colour in the room</div>';
   const g=document.createElement("div");g.className="sw";
   COLOURS.forEach(c=>{
     const b=document.createElement("button");b.type="button";
@@ -37,11 +37,12 @@ function rColour(p){
       [...g.children].forEach(x=>{x.setAttribute("aria-pressed","false");
         x.style.borderColor=COLOURS.find(y=>y.t===x.textContent).bd;});
       b.setAttribute("aria-pressed","true");b.style.borderColor="var(--ink)";
-      const m=S.pool.filter(x=>x.col===c.k);let msg;
+      const matchKeys=c.match||[c.k];
+      const m=S.pool.filter(x=>matchKeys.includes(x.col));let msg;
       if(m.length>=2){S.pool=m;S.why=c.t.toLowerCase()+" won the room";
-        msg=c.t+" food, then. "+m.length+" left.";}
-      else{S.why=c.t.toLowerCase()+" won, nothing matched";
-        msg="Nothing "+c.t.toLowerCase()+" made it. Everyone stays in.";}
+        msg=c.t+" won the room. "+m.length+" places fit the colour mood.";}
+      else{S.why=c.t.toLowerCase()+" won, too few places matched";
+        msg=c.t+" won the room, but too few places matched. Everyone stays in.";}
       paint();say(p,msg);
     };
     g.appendChild(b);
@@ -57,7 +58,8 @@ function rPoint(p){
   buildings.forEach(l=>{
     const count=candidates.filter(x=>x.l===l).length;
     const b=document.createElement("button");b.type="button";
-    b.innerHTML=ARROW(DIRS[l]||0)+"<span>"+l+"<small>"+count+" "+(count===1?"place":"places")+"</small></span>";
+    const icon=Object.prototype.hasOwnProperty.call(DIRS,l)?ARROW(DIRS[l]):ICON.point;
+    b.innerHTML=icon+"<span>"+l+"<small>"+count+" "+(count===1?"place":"places")+"</small></span>";
     b.onclick=()=>{
       const matched=candidates.filter(x=>x.l===l);
       S.pool=matched;S.why="the room pointed at "+l;
