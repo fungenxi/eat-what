@@ -1,30 +1,32 @@
 /* Playful brand switcher + Been there rating UI. */
 
-/* Each language gets its own personality while keeping the same compact wordmark footprint. */
+/* Keep the language switch fun, but legible and visually calm. */
 .mark[data-brand="eat"]{
-  font-family:"Bungee Shade","Gabarito",sans-serif;
-  font-size:17px;
-  letter-spacing:.01em;
+  font-family:"Gabarito",sans-serif;
+  font-size:18px;
+  font-weight:900;
+  letter-spacing:-.03em;
 }
 .mark[data-brand="jiak"]{
-  font-family:"Bungee","Gabarito",sans-serif;
-  font-size:16px;
-  letter-spacing:.005em;
-  transform:rotate(-1deg);
+  font-family:"Fredoka","Gabarito",sans-serif;
+  font-size:18px;
+  font-weight:700;
+  letter-spacing:-.02em;
+  transform:rotate(-.35deg);
 }
 .mark[data-brand="makan"]{
-  font-family:"Baloo 2","Gabarito",sans-serif;
-  font-size:21px;
-  font-weight:800;
-  letter-spacing:-.025em;
-  transform:rotate(.5deg);
+  font-family:"Fredoka","Gabarito",sans-serif;
+  font-size:18px;
+  font-weight:600;
+  letter-spacing:-.015em;
+  transform:rotate(.25deg);
 }
 .mark[data-brand="chi"]{
-  font-family:"ZCOOL KuaiLe","Noto Sans SC","Gabarito",sans-serif;
-  font-size:21px;
-  font-weight:400;
-  letter-spacing:.02em;
-  transform:rotate(-.5deg);
+  font-family:"Noto Sans SC","Gabarito",sans-serif;
+  font-size:18px;
+  font-weight:800;
+  letter-spacing:0;
+  transform:none;
 }
 
 /* Been there / rating history. */
@@ -51,9 +53,10 @@
 .rating-caption{min-height:17px;margin-top:6px;font-size:11px;font-weight:800;opacity:.6;text-align:right}
 
 @media (max-width:390px){
-  .mark[data-brand="eat"]{font-size:15px}
-  .mark[data-brand="jiak"]{font-size:14px}
-  .mark[data-brand="makan"],.mark[data-brand="chi"]{font-size:19px}
+  .mark[data-brand="eat"],
+  .mark[data-brand="jiak"],
+  .mark[data-brand="makan"],
+  .mark[data-brand="chi"]{font-size:17px}
   .visit-kicker{max-width:230px}
   .rating-btn{min-height:38px}
 }
