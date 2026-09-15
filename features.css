@@ -1,4 +1,4 @@
-/* Playful brand switcher + Been there rating UI. */
+/* Playful brand switcher + history/rating UI. */
 
 /* Keep the language switch fun, but legible and visually calm. */
 .mark[data-brand="eat"]{
@@ -29,39 +29,139 @@
   transform:none;
 }
 
-/* Been there / rating history. */
-.visit-panel{padding-bottom:8px}
-.visit-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:4px}
-.visit-head .lbl{margin-bottom:2px}
-.visit-kicker{font-size:12px;font-weight:650;line-height:1.3;opacity:.48}
-.visit-count{flex:none;font-size:11px;font-weight:850;line-height:1;padding:7px 9px;border-radius:99px;background:rgba(24,20,25,.07);color:var(--ink)}
+/* ---------- quick action FAB ---------- */
+.fab{z-index:62}
+.fab svg{transition:transform .2s var(--e)}
+.fab[data-open="true"] svg{transform:rotate(45deg)}
 
-.visit-card{padding:12px 0;border-bottom:2px solid rgba(24,20,25,.08)}
+.quick-actions{
+  position:fixed;
+  z-index:61;
+  right:max(18px,calc(50vw - 240px + 18px));
+  bottom:max(92px,calc(84px + env(safe-area-inset-bottom)));
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:8px;
+  pointer-events:none;
+}
+.quick-action{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-height:46px;
+  padding:8px 14px 8px 10px;
+  border:0;
+  border-radius:99px;
+  background:var(--cream);
+  color:var(--ink);
+  box-shadow:0 8px 22px -9px rgba(0,0,0,.55);
+  font:inherit;
+  font-size:14px;
+  font-weight:850;
+  cursor:pointer;
+  opacity:0;
+  transform:translateY(14px) scale(.88);
+  transform-origin:right bottom;
+  transition:opacity .16s var(--e),transform .2s var(--e),background .12s var(--e),color .12s var(--e);
+}
+.quick-actions[data-open="true"]{pointer-events:auto}
+.quick-actions[data-open="true"] .quick-action{opacity:1;transform:none}
+.quick-actions[data-open="true"] .quick-history{transition-delay:.025s}
+.quick-icon{
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:var(--ink);
+  color:var(--cream);
+  font-size:18px;
+  font-weight:900;
+  line-height:1;
+}
+.quick-action:active,.quick-action.drag-over{
+  background:var(--mustard);
+  transform:scale(1.04)!important;
+}
+.quick-action.drag-over .quick-icon{background:var(--coral)}
+.quick-action:focus-visible{outline:3px solid var(--mustard);outline-offset:3px}
+
+/* ---------- Been there history sheet ---------- */
+body.modal-open{overflow:hidden}
+.history-scrim{z-index:70}
+.history-scrim.hide{display:none}
+.history-sheet{
+  max-height:min(82dvh,720px);
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  padding-bottom:12px;
+}
+.history-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:8px;
+}
+.history-head .lbl{margin-bottom:2px}
+.history-head h2{margin:0;font-size:28px;line-height:1;letter-spacing:-.035em}
+.history-close{
+  flex:none;
+  width:40px;
+  height:40px;
+  border:0;
+  border-radius:50%;
+  background:rgba(24,20,25,.08);
+  color:var(--ink);
+  font:inherit;
+  font-size:25px;
+  font-weight:700;
+  line-height:1;
+  cursor:pointer;
+}
+.history-close:active{transform:scale(.92)}
+.history-close:focus-visible{outline:3px solid var(--bg);outline-offset:2px}
+.history-empty{
+  padding:20px 2px 14px;
+  font-size:15px;
+  line-height:1.4;
+  font-weight:650;
+  opacity:.58;
+}
+.history-empty.hide{display:none}
+
+.visit-card{padding:14px 0;border-bottom:2px solid rgba(24,20,25,.08)}
 .visit-card:last-child{border-bottom:0;padding-bottom:4px}
 .visit-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
 .visit-copy{min-width:0}
-.visit-copy b{display:block;font-size:15px;line-height:1.15;overflow-wrap:anywhere}
-.visit-meta{display:block;margin-top:3px;font-size:11px;font-weight:700;opacity:.46}
+.visit-copy b{display:block;font-size:16px;line-height:1.15;overflow-wrap:anywhere}
+.visit-meta{display:block;margin-top:4px;font-size:11px;font-weight:700;opacity:.46}
 .visit-score{flex:none;font-size:11px;font-weight:900;line-height:1;padding:6px 8px;border-radius:99px;background:var(--ink);color:var(--cream)}
 .visit-score.unrated{background:rgba(24,20,25,.08);color:var(--ink)}
 
 .rating-scale{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:10px}
-.rating-btn{min-width:0;min-height:40px;border:2px solid rgba(24,20,25,.12);border-radius:12px;background:transparent;color:var(--ink);font:inherit;font-size:15px;font-weight:900;cursor:pointer;transition:transform .11s var(--e),background .15s var(--e),border-color .15s var(--e)}
+.rating-btn{min-width:0;min-height:42px;border:2px solid rgba(24,20,25,.12);border-radius:12px;background:transparent;color:var(--ink);font:inherit;font-size:15px;font-weight:900;cursor:pointer;transition:transform .11s var(--e),background .15s var(--e),border-color .15s var(--e)}
 .rating-btn:active{transform:scale(.9) rotate(-2deg)}
 .rating-btn[aria-pressed="true"]{background:var(--mustard);border-color:var(--ink);transform:translateY(-2px) rotate(-1deg)}
 .rating-btn:focus-visible{outline:3px solid var(--bg);outline-offset:2px}
 .rating-caption{min-height:17px;margin-top:6px;font-size:11px;font-weight:800;opacity:.6;text-align:right}
+
+@media (max-width:480px){
+  .quick-actions{right:max(18px,env(safe-area-inset-right));bottom:max(88px,calc(78px + env(safe-area-inset-bottom)))}
+  .history-sheet{max-height:calc(88dvh - env(safe-area-inset-bottom))}
+}
 
 @media (max-width:390px){
   .mark[data-brand="eat"],
   .mark[data-brand="jiak"],
   .mark[data-brand="makan"],
   .mark[data-brand="chi"]{font-size:17px}
-  .visit-kicker{max-width:230px}
-  .rating-btn{min-height:38px}
+  .rating-btn{min-height:40px}
+  .quick-action{font-size:13px}
 }
 
 @media (prefers-reduced-motion:reduce){
-  .rating-btn,.mark{transition:none!important}
-  .rating-btn[aria-pressed="true"]{transform:none}
+  .rating-btn,.mark,.quick-action,.fab svg{transition:none!important}
+  .rating-btn[aria-pressed="true"],.quick-action.drag-over{transform:none!important}
 }
