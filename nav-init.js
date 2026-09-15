@@ -12,6 +12,20 @@ function go(n){
 document.querySelectorAll("#nav button").forEach(b=>b.onclick=()=>go(+b.dataset.go));
 document.querySelectorAll("[data-next]").forEach(b=>b.onclick=()=>go(+b.dataset.next));
 
+/* ---------- playful app-name switcher ---------- */
+const BRAND_NAMES=["Eat What?!","Jiak Simi?!","Makan Apa?!","吃什么?!"];
+let brandIndex=0;
+const brand=$("brandName");
+if(brand){
+  brand.onclick=()=>{
+    brandIndex=(brandIndex+1)%BRAND_NAMES.length;
+    brand.classList.remove("brand-pop");
+    void brand.offsetWidth;
+    brand.textContent=BRAND_NAMES[brandIndex];
+    brand.classList.add("brand-pop");
+  };
+}
+
 const flags=PLACES.filter(p=>p.check).length;
 
 buildFilters();pool();renderLog();go(1);
