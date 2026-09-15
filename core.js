@@ -91,28 +91,21 @@ function hoursLine(pl,d){
 const specialToday=(pl,d)=>pl.sp&&pl.sp.d.includes(d.getDay())?pl.sp.t:null;
 
 function tickClock(){
-  const d=new Date();
-  const c=$("clock");
-  if(c)c.textContent=SHORT[d.getDay()]+" "+String(d.getHours()).padStart(2,"0")+
-    ":"+String(d.getMinutes()).padStart(2,"0");
-  drawToday(d);
+  drawToday(new Date());
 }
 
 function drawToday(d){
   const scope=PLACES.filter(p=>!S.area||placeArea(p)===S.area),
-        shut=scope.filter(p=>state(p,d)==="closed"),
         soon=scope.filter(p=>{const m=closingIn(p,d);return state(p,d)==="open"&&m!==null&&m<=45;}),
         specials=scope.filter(p=>specialToday(p,d)),
         early=scope.filter(p=>p.early),
         t=clockOf(d);
   let bits="";
-  if(shut.length)bits+='<li><em>Shut</em><span>'+shut.map(p=>p.n).join(", ")+'</span></li>';
   if(soon.length)bits+='<li><em>Closing soon</em><span>'+soon.map(p=>p.n).join(", ")+'</span></li>';
   specials.forEach(p=>bits+='<li><em>Today only</em><span>'+p.sp.t+' at '+p.n+'</span></li>');
-  if(t>=12.5&&early.length)bits+='<li><em>Too late</em><span>'+early.map(p=>p.n).join(", ")+' is best before noon</span></li>';
-  const html='<div class="today"><b>'+DAYS[d.getDay()]+", "+fmtT(Math.floor(t)+
-    (d.getMinutes()>=30?0.5:0))+'.</b> '+
-    (S.extra.has("now")?'Showing only what is open.':'')+
-    (bits?'<ul>'+bits+'</ul>':'')+'</div>';
+  if(t>=12.5&&early.length)bits+='<li><em>Best earlier</em><span>'+early.map(p=>p.n).join(", ")+' is best before noon</span></li>';
+
+  const status=S.extra.has("now")?'<b>Showing only places open now.</b> ':'';
+  const html=(status||bits)?'<div class="today">'+status+(bits?'<ul>'+bits+'</ul>':'')+'</div>':'';
   ["today0","today1"].forEach(id=>{const el=$(id);if(el)el.innerHTML=html;});
 }
