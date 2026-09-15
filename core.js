@@ -35,8 +35,10 @@ const DIRS={"Funan":0,"Capitol":45,"Adelphi":90,"Raffles City":135,
 
 const HEADS=[["Narrow","it down"],["Ask","the room"],["Let fate","decide"]];
 const BG=["var(--teal)","var(--plum)","var(--coral)"];
+const placeArea=p=>p.area||"Civic District";
+const defaultArea=PLACES.some(p=>placeArea(p)==="Civic District")?"Civic District":(PLACES[0]?placeArea(PLACES[0]):null);
 
-const S={stage:1,price:new Set(),loc:new Set(),cui:new Set(),extra:new Set(),
+const S={stage:1,area:defaultArea,price:new Set(),loc:new Set(),cui:new Set(),extra:new Set(),
   pool:[...PLACES],base:[...PLACES],why:null,mech:null,
   log:readLocal(STORAGE.log,[]).filter(x=>x&&typeof x.n==="string"&&typeof x.how==="string")};
 
@@ -97,10 +99,11 @@ function tickClock(){
 }
 
 function drawToday(d){
-  const shut=PLACES.filter(p=>state(p,d)==="closed"),
-        soon=PLACES.filter(p=>{const m=closingIn(p,d);return state(p,d)==="open"&&m!==null&&m<=45;}),
-        specials=PLACES.filter(p=>specialToday(p,d)),
-        early=PLACES.filter(p=>p.early),
+  const scope=PLACES.filter(p=>!S.area||placeArea(p)===S.area),
+        shut=scope.filter(p=>state(p,d)==="closed"),
+        soon=scope.filter(p=>{const m=closingIn(p,d);return state(p,d)==="open"&&m!==null&&m<=45;}),
+        specials=scope.filter(p=>specialToday(p,d)),
+        early=scope.filter(p=>p.early),
         t=clockOf(d);
   let bits="";
   if(shut.length)bits+='<li><em>Shut</em><span>'+shut.map(p=>p.n).join(", ")+'</span></li>';
