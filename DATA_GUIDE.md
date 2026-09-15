@@ -4,25 +4,25 @@ This file is the maintenance guide for the shared restaurant list in `data.js`.
 
 ## Current dataset
 
-There are currently **32 shared places**.
+There are currently **31 shared places**.
 
-Opening-hours quality:
+Opening-hours quality after the 15 Sep 2026 verification pass:
 
-- **11** have stall-specific hours (`src: "stall"`)
-- **21** use building-level hours (`src: "mall"`)
-- **0** have no opening hours recorded
-- **3** have a recorded verification date (`2026-09-15`)
+- **30** have venue/stall-specific hours
+- **0** rely only on generic mall hours
+- **1** has unverified hours: **Yuen Kee Dumpling (Funan)**
+- **24** records were actively checked on 15 Sep 2026 and carry a source label/date
 
 Halal data:
 
-- **3** are explicitly marked halal-certified
-- **29** are currently treated as **unknown**, not as "not halal"
+- **5** are explicitly marked halal-certified
+- all other records are treated as **unknown**, not automatically as "not halal"
 
-The app runs `data-cleanup.js` after `data.js`. This adds readable canonical fields to every shared place without breaking the existing UI or short field names.
+The stale **109 Yong Tau Fu @ Funan** record was removed. Current sources place 109 Yong Tau Foo at Circular Road, not inside Funan.
 
 ## Canonical fields
 
-Use these concepts when adding or cleaning records:
+`data-cleanup.js` adds readable canonical fields to every shared place without breaking the existing UI or short field names.
 
 | Field | Meaning |
 | --- | --- |
@@ -33,70 +33,58 @@ Use these concepts when adding or cleaning records:
 | `priceTier` | `1`, `2`, or `3` |
 | `area` | Broad area, currently `Civic District` |
 | `building` | Building / mall used by the Building filter |
-| `unit` | Actual unit number only, e.g. `B1-16` |
-| `locationHint` | Human directions, e.g. `By the waterfall` |
+| `unit` | Actual unit number only |
+| `locationHint` | Human directions when needed |
 | `address` | Full address when verified |
 | `colour` | Food-colour value used by Colour census |
 | `halalStatus` | `certified`, `not-certified`, or `unknown` |
 | `hours` | Opening-hours object |
 | `hoursSource.level` | `stall`, `building`, or `unknown` |
-| `hoursSource.checked` | Date the hours were last checked |
-| `hoursSource.label` | Human-readable source label, e.g. `Google listing` |
-| `hoursSource.url` | Optional source URL |
+| `hoursSource.checked` | Date hours were last checked |
+| `hoursSource.url` | Source URL where one is available |
+| `hoursSource.label` | Human-readable source description |
 | `status` | `active` for now |
 
-The existing short fields (`n`, `c`, `p`, `l`, `w`, `col`, `h`, `src`) remain in `data.js` because the current UI uses them. `data-cleanup.js` derives the canonical fields so feature work can gradually move to clearer names without a risky rewrite.
-
-## Location rule
-
-Do not mix a unit number with directions.
-
-Good:
-
-```text
-unit: B1-16
-locationHint: null
-```
-
-or:
-
-```text
-unit: null
-locationHint: By the waterfall
-```
-
-Current location hints separated by the cleanup layer include:
-
-- `Inside Raffles Coffee & Toast`
-- `Basement 2`
-- `By the waterfall`
-- `In Lao Di Fang food court`
+The existing short fields (`n`, `c`, `p`, `l`, `w`, `col`, `h`, `src`) remain because the current UI uses them.
 
 ## Opening-hours rule
 
-This is the most important data-cleaning priority because it affects the `Open now` filter.
+This directly affects the `Open now` filter, so accuracy matters more than completeness.
 
-- `stall` = hours belong to the actual restaurant/stall
-- `building` = only the mall/building hours are known
-- `unknown` = no useful hours recorded
+- `stall` = hours belong to the actual restaurant / venue
+- `building` = only building hours are known
+- `unknown` = hours have not been verified
 
-Do **not** upgrade a building-hours record to stall-level unless there is an actual source for that stall.
+The `Open now` filter now includes **only places confirmed open at that moment**. Unknown-hours places are excluded instead of being treated as possibly open.
 
-The app supports a generic weekday schedule using `mf`, plus exact-day overrides such as `fri`, `sat`, and `sun` when a place differs on a particular day.
+The hours engine supports:
+
+- regular weekday hours using `mf`
+- `sat` and `sun`
+- exact-day overrides such as `fri`
+- split service windows such as lunch + dinner
+- `null` for a day when the venue is closed
 
 Example:
 
 ```js
-h:{mf:[8.5,15.25],fri:[8.5,15],sat:[9,15.25],sun:null}
+h:{
+  mf:[8.5,15.25],
+  fri:[8.5,15],
+  sat:[9,15.25],
+  sun:null
+}
 ```
 
-The three previously missing Adelphi records are now populated:
+## Location cleanup completed
 
-- Makanan Bollywood — daily 8am–8pm
-- Tian Xin Wanton Noodle — Mon–Sat 8am–3pm, Sun closed
-- Tony Café — Mon–Thu 8:30am–3:15pm, Fri 8:30am–3pm, Sat 9am–3:15pm, Sun closed
+The September 2026 pass separated proper unit numbers from vague location descriptions and corrected several current unit numbers.
 
-Their full addresses and a `2026-09-15` verification date are also recorded.
+The Clarke Quay entries in the dataset now use **Clarke Quay Central** where they are actually located at The Central mall, rather than the broader Clarke Quay precinct.
+
+Generic `Clarke Quay Food Court` was replaced with the current **Sinfoodie** food court.
+
+`Yuan Kee Dumpling` was corrected to **Yuen Kee Dumpling** and the Funan unit was set to `02-03`.
 
 ## Halal rule
 
@@ -108,13 +96,15 @@ Use:
 - `not-certified` only when that status has actually been verified
 - `unknown` when it has not been checked
 
+Current verified halal records include Qi Ji, Dapur Penyet, The Tree Cafe, Makanan Bollywood, and Hatsumi Donburi & Soba.
+
 ## Price tiers
 
 The app currently uses `$`, `$$`, and `$$$`, but the exact SGD thresholds have **not yet been defined**. Do not recategorise the whole dataset until one consistent rule is agreed.
 
 ## Cuisine taxonomy
 
-The current values are preserved for now. They mix cuisines and venue types, for example:
+The current values are still preserved for now. They mix cuisines and venue types, for example:
 
 - Chinese
 - Sichuan
@@ -127,34 +117,29 @@ The current values are preserved for now. They mix cuisines and venue types, for
 - Cai fan
 - Heritage
 
-Before the list grows substantially, decide whether the filter should use a smaller set of broad cuisines, tags, or both. `type` has been separated so `Food court`, `Cafe`, and `Drinks` do not need to stay cuisine values forever.
+This is the next meaningful cleanup area once hours/location data are stable. `type` already separates `Food court`, `Cafe`, and `Drinks` conceptually so a future migration can be gradual.
 
 ## Items still needing verification
 
-These should not be silently "corrected" without checking a source:
-
-- Big Appetite — operator/name should be verified if this becomes important
-- Punggol Nasi Lemak — business branding may use `Ponggol`; preserve the contributed name until verified
-- 109 Yong Tau Fu — Funan / Lao Di Fang location was inferred and should be verified
-- All `colour` values — assigned by inference and worth a human pass
-- The **21 building-hours records** — replace them with stall-specific hours when verified
+- **Yuen Kee Dumpling (Funan)** — unit is verified, but opening hours still need a trustworthy outlet-specific source
+- **Punggol Nasi Lemak** — business branding may use `Ponggol`; preserve the current name until verified
+- older stall-specific records without `hoursChecked` should eventually receive a provenance pass
+- all `colour` values are subjective and worth a human sanity pass
 
 ## Adding a new shared place
 
-For now, add it to `MASTER_PLACES` in `data.js` and follow the existing compact format. At minimum collect:
+For now, add it to `MASTER_PLACES` in `data.js`. At minimum collect:
 
 1. Name
 2. Building
 3. Cuisine
 4. Price tier
-5. Unit number or location hint, if known
+5. Unit number or location hint
 6. Halal status (`certified` only if verified)
 7. Opening hours
-8. Whether those hours are stall-specific or only building hours
+8. Opening-hours source and checked date
 9. Notes only when useful
-10. Food colour for the Colour census
-11. Full address when known
-12. Date/source used to verify hours
+10. Food colour for Colour census
 
 After deployment, open the browser console and inspect:
 
