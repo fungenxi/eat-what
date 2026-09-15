@@ -38,7 +38,7 @@
   100%{opacity:.92;transform:scaleX(1) rotate(-1deg)}
 }
 
-/* Ask the room — A: sparkle pop, B: tiny chat bubble bounce. */
+/* Ask the room — A: sparkle pop, B: tiny chat bubble that stays. */
 .title-room[data-effect="a"] .title-spark{display:block}
 .title-room[data-effect="b"] .title-spark{display:none}
 .title-room::after{
@@ -63,6 +63,10 @@
   pointer-events:none;
   transform:translateY(6px) scale(.45) rotate(5deg);
 }
+.title-room[data-effect="b"]::after{
+  opacity:1;
+  transform:none;
+}
 .title-room[data-effect="b"].title-pop::after{
   animation:roomChatBounce .72s .04s cubic-bezier(.2,.9,.3,1.18) forwards;
 }
@@ -71,7 +75,7 @@
   35%{opacity:1;transform:translateY(-4px) scale(1.08) rotate(-2deg)}
   58%{opacity:1;transform:translateY(0) scale(.98) rotate(1deg)}
   78%{opacity:1;transform:none}
-  100%{opacity:0;transform:translateY(-3px) scale(.96)}
+  100%{opacity:1;transform:none}
 }
 
 /* Let fate decide — hide the old arrow/swoop entirely. */
@@ -82,89 +86,120 @@
   isolation:isolate;
 }
 
-/* A: one tiny star orbits fate, with a faint trail. */
+/* A: magic dust drifts slowly around fate. */
 .title-fate[data-effect="a"] .fate-word::before{
+  content:"";
+  position:absolute;
+  z-index:4;
+  left:50%;
+  top:52%;
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background:var(--cream);
+  opacity:0;
+  pointer-events:none;
+  box-shadow:
+    -29px 6px 0 rgba(251,246,236,.82),
+    -18px -13px 0 rgba(255,194,46,.9),
+    1px -22px 0 rgba(251,246,236,.95),
+    18px -11px 0 rgba(255,194,46,.84),
+    30px 7px 0 rgba(251,246,236,.7),
+    13px 21px 0 rgba(255,194,46,.74),
+    -13px 20px 0 rgba(251,246,236,.76);
+  transform:translate(-50%,-50%) scale(.55);
+}
+.title-fate[data-effect="a"] .fate-word::after{
   content:"✦";
   position:absolute;
   z-index:4;
   left:50%;
   top:50%;
   color:var(--cream);
-  font-size:13px;
+  font-size:11px;
   line-height:1;
   opacity:0;
   pointer-events:none;
-  text-shadow:0 0 7px rgba(251,246,236,.35);
-}
-.title-fate[data-effect="a"] .fate-word::after{
-  content:"";
-  position:absolute;
-  z-index:-1;
-  left:50%;
-  top:50%;
-  width:92px;
-  height:44px;
-  border:1.5px solid rgba(251,246,236,.38);
-  border-left-color:transparent;
-  border-bottom-color:rgba(251,246,236,.18);
-  border-radius:50%;
-  opacity:0;
-  pointer-events:none;
-  transform:translate(-50%,-50%) rotate(-10deg) scale(.78);
+  text-shadow:
+    24px -12px 0 rgba(255,194,46,.72),
+    -25px 14px 0 rgba(251,246,236,.62);
+  transform:translate(-50%,-50%) scale(.6);
 }
 .title-fate[data-effect="a"].title-pop .fate-word::before{
-  animation:fateOrbitStar .72s .04s var(--e) forwards;
+  animation:fateMagicDust 1.18s .05s cubic-bezier(.2,.72,.28,1) forwards;
 }
 .title-fate[data-effect="a"].title-pop .fate-word::after{
-  animation:fateOrbitTrail .72s .04s var(--e) forwards;
+  animation:fateDustTwinkle 1.08s .12s var(--e) forwards;
 }
-@keyframes fateOrbitStar{
-  0%{opacity:0;transform:translate(-50%,-50%) translate(0,-27px) scale(.45) rotate(0)}
-  12%{opacity:1}
-  25%{transform:translate(-50%,-50%) translate(37px,-8px) scale(1) rotate(90deg)}
-  50%{transform:translate(-50%,-50%) translate(0,22px) scale(.92) rotate(180deg)}
-  75%{opacity:1;transform:translate(-50%,-50%) translate(-37px,-8px) scale(.82) rotate(270deg)}
-  100%{opacity:0;transform:translate(-50%,-50%) translate(0,-27px) scale(.45) rotate(360deg)}
+@keyframes fateMagicDust{
+  0%{opacity:0;transform:translate(-50%,-40%) scale(.55)}
+  18%{opacity:.95}
+  58%{opacity:.9;transform:translate(-50%,-64%) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-92%) scale(1.12)}
 }
-@keyframes fateOrbitTrail{
-  0%{opacity:0;transform:translate(-50%,-50%) rotate(-10deg) scale(.72)}
-  30%{opacity:.72}
-  78%{opacity:.42;transform:translate(-50%,-50%) rotate(-2deg) scale(1)}
-  100%{opacity:0;transform:translate(-50%,-50%) rotate(4deg) scale(1.04)}
+@keyframes fateDustTwinkle{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.55) rotate(-10deg)}
+  28%{opacity:.95;transform:translate(-50%,-58%) scale(1) rotate(3deg)}
+  72%{opacity:.68;transform:translate(-50%,-72%) scale(.9) rotate(8deg)}
+  100%{opacity:0;transform:translate(-50%,-84%) scale(.72) rotate(12deg)}
 }
 
-/* B: fate gets one soft glow + pulse, then settles. */
+/* B: constellation dots connect briefly, then dissolve. */
+.title-fate[data-effect="b"] .fate-word::before{
+  content:"";
+  position:absolute;
+  z-index:4;
+  left:50%;
+  top:50%;
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:var(--cream);
+  opacity:0;
+  pointer-events:none;
+  box-shadow:
+    -28px -14px 0 var(--cream),
+    20px -21px 0 rgba(255,194,46,.95),
+    31px 13px 0 rgba(251,246,236,.92),
+    2px 25px 0 rgba(255,194,46,.92),
+    -25px 15px 0 rgba(251,246,236,.86);
+  transform:translate(-50%,-50%) scale(.55);
+}
 .title-fate[data-effect="b"] .fate-word::after{
   content:"";
   position:absolute;
-  z-index:-1;
+  z-index:3;
   left:50%;
   top:50%;
-  width:84px;
+  width:76px;
   height:54px;
-  border-radius:50%;
-  background:radial-gradient(circle,rgba(251,246,236,.34) 0 18%,rgba(255,194,46,.20) 38%,transparent 72%);
   opacity:0;
   pointer-events:none;
-  transform:translate(-50%,-50%) scale(.55);
-  filter:blur(2px);
+  background:
+    linear-gradient(26deg,transparent 0 31%,rgba(251,246,236,.52) 32% 34%,transparent 35% 100%),
+    linear-gradient(145deg,transparent 0 39%,rgba(251,246,236,.46) 40% 42%,transparent 43% 100%),
+    linear-gradient(77deg,transparent 0 46%,rgba(255,194,46,.42) 47% 49%,transparent 50% 100%),
+    linear-gradient(-22deg,transparent 0 56%,rgba(251,246,236,.38) 57% 59%,transparent 60% 100%);
+  transform:translate(-50%,-50%) scale(.72) rotate(-2deg);
+  filter:drop-shadow(0 0 4px rgba(251,246,236,.14));
 }
-.title-fate[data-effect="b"].title-pop .fate-word{
-  animation:fateSoftPulse .62s .05s cubic-bezier(.18,.9,.3,1.12) both;
+.title-fate[data-effect="b"].title-pop .fate-word::before{
+  animation:fateConstellationDots 1.28s .04s var(--e) forwards;
 }
 .title-fate[data-effect="b"].title-pop .fate-word::after{
-  animation:fateSoftGlow .68s .02s var(--e) forwards;
+  animation:fateConstellationLines 1.28s .14s cubic-bezier(.2,.72,.28,1) forwards;
 }
-@keyframes fateSoftPulse{
-  0%{transform:scale(1)}
-  40%{transform:scale(1.085)}
-  68%{transform:scale(.99)}
-  100%{transform:scale(1)}
+@keyframes fateConstellationDots{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}
+  22%{opacity:1;transform:translate(-50%,-50%) scale(1.04)}
+  68%{opacity:.95;transform:translate(-50%,-50%) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.06)}
 }
-@keyframes fateSoftGlow{
-  0%{opacity:0;transform:translate(-50%,-50%) scale(.55)}
-  35%{opacity:1;transform:translate(-50%,-50%) scale(1)}
-  100%{opacity:0;transform:translate(-50%,-50%) scale(1.18)}
+@keyframes fateConstellationLines{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.72) rotate(-2deg)}
+  30%{opacity:.82;transform:translate(-50%,-50%) scale(1) rotate(0)}
+  66%{opacity:.68}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.04) rotate(1deg)}
 }
 
 @media (max-width:390px){
@@ -176,9 +211,9 @@
   .title-room[data-effect="b"]::after,
   .title-fate[data-effect="a"] .fate-word::before,
   .title-fate[data-effect="a"] .fate-word::after,
-  .title-fate[data-effect="b"] .fate-word,
+  .title-fate[data-effect="b"] .fate-word::before,
   .title-fate[data-effect="b"] .fate-word::after{animation:none!important}
-  .title-room::after,
+  .title-room[data-effect="b"]::after{opacity:1!important;transform:none!important}
   .title-fate .fate-word::before,
   .title-fate .fate-word::after{display:none!important}
 }
