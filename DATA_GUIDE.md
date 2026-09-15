@@ -14,7 +14,7 @@ Status after the 15 Sep 2026 verification pass:
 - all 43 active recommendations have venue/stall-specific opening hours
 - **38** master records carry a verification date and source label
 
-The app now excludes any master record whose `status` is not `active`, so a temporarily or permanently closed place can stay in the maintenance data without appearing in filters, rituals or games.
+The app excludes any master record whose `status` is not `active`, so a temporarily or permanently closed place can stay in the maintenance data without appearing in filters, rituals or games.
 
 Halal data:
 
@@ -34,8 +34,8 @@ The stale **109 Yong Tau Fu @ Funan** record was removed. Current sources place 
 | `cuisine` | Main cuisine/category currently used by the Cuisine filter |
 | `type` | `Eatery`, `Cafe`, `Food court`, or `Drinks` for now |
 | `priceTier` | `1`, `2`, or `3` |
-| `area` | Broad area; defaults to `Civic District` for the current dataset |
-| `building` | Building / mall used by the Building filter |
+| `area` | Broad lunch zone, e.g. `Civic District`, `Mapletree Business City`, `Punggol Digital District`, `Jurong West` |
+| `building` | Building / mall / street used by the Building filter |
 | `unit` | Actual unit number only |
 | `locationHint` | Human directions when needed |
 | `address` | Full address when verified |
@@ -126,6 +126,33 @@ The Yuen Kee Dumpling Funan record has daily opening hours of **10am–9pm**, ba
 
 Some researched places are standalone buildings or streets rather than malls, such as Bulkhaul House, Chye Sing Building, Beach Road and Purvis Street. Point the Way uses a neutral point icon for locations that do not yet have a deliberately configured physical direction; the app should not invent an arrow direction.
 
+## Area-first filtering
+
+The app now has a real **Area** filter before Building. It is intentionally hidden while only one area exists, so the current Civic District experience does not gain a useless one-option control.
+
+As soon as records from a second area are added, the Area panel appears automatically. Area selection is single-choice because one lunch decision should stay geographically coherent.
+
+Selecting a new area:
+
+- scopes the Building choices to that area
+- scopes Cuisine choices to that area
+- scopes `Open now` / today's warnings to that area
+- scopes rituals and games to that area through the main pool
+- clears any stale Building selection from the previous area
+
+Personal places added with the `+` button now also store an `area`. Older personal places without an area fall back to `Civic District` for backwards compatibility.
+
+This means future data can be added safely as:
+
+```js
+area:"Civic District"
+area:"Mapletree Business City"
+area:"Punggol Digital District"
+area:"Jurong West"
+```
+
+without Point the Way mixing City Hall, Punggol and Jurong buildings together.
+
 ## Colour census
 
 The room/outfit colours are deliberately broader than the food-colour data.
@@ -181,22 +208,17 @@ Seven active recommendations were added after checking current business listings
 
 Recent Peninsula Plaza coverage in 2026 continues to describe its basement/lower-floor Myanmar eateries as active, authentic and easy to overlook from the street. The list deliberately adds some non-mall options so Funan does not dominate every game.
 
-## Future multi-area expansion
+## Multi-area expansion plan
 
-The data model is being kept ready for multiple lunch zones. `area` now preserves an explicit value when supplied rather than always overwriting it with `Civic District`.
+The filter architecture is now ready for future lunch zones. The next research passes can populate areas independently rather than expanding one giant Singapore-wide pool.
 
-Likely future areas can be represented as, for example:
+Suggested scope:
 
-```js
-area:"Civic District"
-area:"Mapletree Business City"
-area:"Punggol Digital District"
-area:"Jurong West"
-```
+- **Mapletree Business City (MBC):** MBC I/II, Alexandra Retail Centre and genuinely walkable lunch options around Alexandra/Pasir Panjang
+- **Punggol Digital District (PDD):** PDD, Punggol Coast Mall and walkable nearby food options
+- **Jurong West:** Jurong Point/Boon Lay plus neighbourhood coffee shops, hawker centres and stronger local hidden gems
 
-When the first non-Civic-District dataset is added, add an **Area** selector above Building. This keeps the current Building filter and Point the Way useful instead of mixing buildings across Singapore into one enormous list.
-
-Do not add MBC, PDD or Jurong West restaurants into the current live pool until that Area selector exists.
+For MBC and PDD, prioritise realistic lunch walking distance. For Jurong West, prioritise neighbourhood quality and variety rather than only malls.
 
 ## Halal rule
 
