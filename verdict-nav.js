@@ -45,6 +45,18 @@ function locationHtml(pl){
   return '<div class="place-info"><div class="detail-label">Find it</div><b>'+where+'</b>'+(pl.address?'<span>'+pl.address+'</span>':'<span>Full address not recorded yet.</span>')+mapLink+'</div>';
 }
 
+function winnerDoodleHtml(pl){
+  return '<div class="winner-doodle">'+
+    '<svg class="winner-burst" viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true">'+
+      '<path d="M8 29 2 25"/><path d="M15 17 11 8"/><path d="M28 12 27 3"/>'+
+      '<path d="M72 12 74 3"/><path d="M85 18 91 10"/><path d="M92 29 99 26"/>'+
+      '<path d="M19 39 13 45"/><path d="M81 39 88 45"/>'+
+    '</svg>'+
+    '<svg class="winner-spark one" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5c.4 3 1.5 4.2 4.4 4.8C9.5 6.9 8.4 8.2 8 11.3 7.5 8.2 6.4 6.9 3.5 6.3 6.4 5.7 7.5 4.5 8 1.5Z"/></svg>'+
+    '<svg class="winner-spark two" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2c.3 2.4 1.2 3.4 3.5 3.9C9.2 6.4 8.3 7.5 8 9.9 7.6 7.5 6.8 6.4 4.5 5.9 6.8 5.4 7.6 4.4 8 2Z"/></svg>'+
+    '<div class="winner">'+pl.n+(pl.new?'<span class="new-tag">NEW</span>':'')+'</div></div>';
+}
+
 function win(pl,how){
   document.body.style.setProperty("--bg","var(--mustard)");
   document.querySelector(".mark").style.color="var(--ink)";
@@ -52,7 +64,7 @@ function win(pl,how){
   const v=$("sv");
   const TICK='<svg viewBox="0 0 24 24"><path d="M5 13l4.5 4.5L19 7"/></svg>';
   const REDO='<svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/></svg>';
-  v.innerHTML='<div class="winner">'+pl.n+(pl.new?'<span class="new-tag">NEW</span>':'')+'</div>'+
+  v.innerHTML=winnerDoodleHtml(pl)+
     '<div class="facts"><span class="fact">'+pl.l+(pl.w?" "+pl.w:"")+'</span>'+
     '<span class="fact open">'+pl.c+'</span><span class="fact open">'+$$(pl.p)+'</span></div>'+
     hoursBadge(pl)+locationHtml(pl)+weeklyHoursHtml(pl)+
@@ -217,7 +229,7 @@ function starRatingHtml(l,rating){
   const stars=[1,2,3,4,5].map(i=>{
     const half=i-.5;
     const fill=rating>=i?100:rating>=half?50:0;
-    return '<span class="star-unit" style="--star-fill:'+fill+'%">'+
+    return '<span class="star-unit" data-fill="'+fill+'" style="--star-fill:'+fill+'%">'+
       '<span class="star-empty" aria-hidden="true">★</span><span class="star-fill" aria-hidden="true">★</span>'+
       '<button class="star-hit star-left" type="button" data-visit="'+l.visitId+'" data-rating="'+half+'" aria-label="Rate '+l.n+' '+half+' out of 5"></button>'+
       '<button class="star-hit star-right" type="button" data-visit="'+l.visitId+'" data-rating="'+i+'" aria-label="Rate '+l.n+' '+i+' out of 5"></button></span>';
