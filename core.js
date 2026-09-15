@@ -35,8 +35,10 @@ const DIRS={"Funan":0,"Capitol":45,"Adelphi":90,"Raffles City":135,
 
 const HEADS=[["Narrow","it down"],["Ask","the room"],["Let fate","decide"]];
 const BG=["var(--teal)","var(--plum)","var(--coral)"];
-const placeArea=p=>p.area||"Civic District";
-const defaultArea=PLACES.some(p=>placeArea(p)==="Civic District")?"Civic District":(PLACES[0]?placeArea(PLACES[0]):null);
+const AREA_OPTIONS=["CBD","Chinatown"];
+const normalizeAreaName=a=>a==="Civic District"?"CBD":(a||"CBD");
+const placeArea=p=>normalizeAreaName(p.area);
+const defaultArea=PLACES.some(p=>placeArea(p)==="CBD")?"CBD":(PLACES[0]?placeArea(PLACES[0]):"CBD");
 
 const S={stage:1,area:defaultArea,price:new Set(),loc:new Set(),cui:new Set(),extra:new Set(),
   pool:[...PLACES],base:[...PLACES],why:null,mech:null,
