@@ -2,7 +2,7 @@
 const RITUALS=[
  {k:"colour",t:"Colour census",s:"Whatever colour the room is wearing, we eat"},
  {k:"point",t:"Point the way",s:"Everyone points on three. Majority takes the building"},
- {k:"fingers",t:"Throw fingers",s:"All throw 1–5 at once. The total sets the budget"},
+ {k:"fingers",t:"Throw fingers",s:"Throw 1–5 each. Add the total; it cycles through $, $$, $$$"},
  {k:"veto",t:"Veto round",s:"One strike each. No explaining yourself"},
  {k:"yday",t:"Not again",s:"Whatever anyone ate yesterday is out"}
 ];
@@ -52,34 +52,48 @@ function rColour(p){
 function rPoint(p){
   p.innerHTML='<div class="lbl big">Point on three. Where did most hands land?</div>';
   const g=document.createElement("div");g.className="dirs";
-  [...new Set(S.pool.map(x=>x.l))].forEach(l=>{
+  const candidates=[...S.pool];
+  const buildings=[...new Set(candidates.map(x=>x.l))];
+  buildings.forEach(l=>{
+    const count=candidates.filter(x=>x.l===l).length;
     const b=document.createElement("button");b.type="button";
-    b.innerHTML=ARROW(DIRS[l]||0)+"<span>"+l+"</span>";
-    b.onclick=()=>{S.pool=S.pool.filter(x=>x.l===l);S.why="the room pointed at "+l;
-      paint();say(p,l+" it is. "+S.pool.length+" places there.");};
+    b.innerHTML=ARROW(DIRS[l]||0)+"<span>"+l+"<small>"+count+" "+(count===1?"place":"places")+"</small></span>";
+    b.onclick=()=>{
+      const matched=candidates.filter(x=>x.l===l);
+      S.pool=matched;S.why="the room pointed at "+l;
+      paint();say(p,l+" it is. "+matched.length+" "+(matched.length===1?"place":"places")+" there.");
+    };
     g.appendChild(b);
   });
   p.appendChild(g);
 }
 
 function rFingers(p){
-  let tot=0;
-  p.innerHTML='<div class="lbl big">Everyone throws 1–5 on three. Tap what each person threw.</div>'+
-    '<div class="total" id="tot">0</div>';
+  let tot=0,throws=[];
+  const tierFor=n=>n%3===0?3:n%3;
+  p.innerHTML='<div class="lbl big">Everyone throws 1–5 on three. Tap each person’s number.</div>'+
+    '<div class="finger-rule">We add the total, then cycle budgets: 1 → $ · 2 → $$ · 3 → $$$ · repeat.</div>'+
+    '<div class="total" id="tot">0</div>'+
+    '<div class="finger-result" id="fingerResult">Waiting for the first throw</div>';
   const pad=document.createElement("div");pad.className="pad";
   for(let i=1;i<=5;i++){
     const b=document.createElement("button");b.type="button";b.textContent=i;
-    b.onclick=()=>{tot+=i;$("tot").textContent=tot;done.disabled=false;};
+    b.onclick=()=>{
+      throws.push(i);tot+=i;$("tot").textContent=tot;
+      const tier=tierFor(tot);
+      $("fingerResult").textContent="Throws: "+throws.join(" + ")+" = "+tot+" → "+$$(tier);
+      done.disabled=false;
+    };
     pad.appendChild(b);
   }
   p.appendChild(pad);
   const done=document.createElement("button");
   done.className="big";done.type="button";done.disabled=true;done.textContent="That's everyone";
   done.onclick=()=>{
-    const tier=tot%3===0?3:tot%3,m=S.pool.filter(x=>x.p===tier);let msg;
+    const tier=tierFor(tot),m=S.pool.filter(x=>x.p===tier);let msg;
     if(m.length>=2){S.pool=m;msg="Total of "+tot+" lands on "+$$(tier)+". "+m.length+" left.";}
     else msg="Total of "+tot+" lands on "+$$(tier)+", but too few matched. Everyone stays in.";
-    S.why="the room threw "+tot;
+    S.why="the room threw "+tot+" for "+$$(tier);
     pad.querySelectorAll("button").forEach(x=>x.disabled=true);done.disabled=true;
     paint();say(p,msg);
   };
