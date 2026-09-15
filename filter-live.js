@@ -1,0 +1,130 @@
+/* Live filter preview + shared filter context across all three decision stages. */
+(()=>{
+  const basePool=pool;
+  const basePaint=paint;
+  const RULE_LABELS={now:"Open now",halal:"Halal",fresh:"Not been lately"};
+
+  function resetDecisionViews(){
+    S.why=null;
+    S.mech=null;
+    ["rRun","mRun"].forEach(id=>{
+      const el=$(id);
+      if(!el)return;
+      el.innerHTML="";
+      el.classList.add("hide");
+    });
+    ["rPick","mPick"].forEach(id=>{
+      const el=$(id);
+      if(!el)return;
+      el.querySelectorAll('[aria-pressed="true"]').forEach(b=>b.setAttribute("aria-pressed","false"));
+    });
+  }
+
+  function filterSummaryParts(){
+    const parts=[];
+    if(S.area)parts.push(S.area);
+    if(S.loc.size)parts.push([...S.loc].sort().join(", "));
+    if(S.price.size)parts.push([...S.price].sort((a,b)=>a-b).map($$).join(" / "));
+    if(S.cui.size)parts.push([...S.cui].sort().join(", "));
+    if(S.extra.size)parts.push([...S.extra].map(k=>RULE_LABELS[k]||k).join(", "));
+    return parts;
+  }
+
+  function optionMeta(pl){
+    const where=[pl.l,pl.w].filter(Boolean).join(" · ");
+    return [where,pl.c,$$(pl.p)].filter(Boolean).join(" · ");
+  }
+
+  function renderNarrowPreview(){
+    const mount=$("filterPreview0");
+    if(!mount)return;
+    mount.replaceChildren();
+
+    const head=document.createElement("div");
+    head.className="filter-preview-head";
+    const copy=document.createElement("div");
+    const title=document.createElement("b");
+    const count=S.base.length;
+    title.textContent=count+" "+(count===1?"option":"options")+" left";
+    const sub=document.createElement("span");
+    sub.textContent="Updates live as you filter";
+    copy.append(title,sub);
+    head.appendChild(copy);
+    mount.appendChild(head);
+
+    if(!count){
+      const empty=document.createElement("div");
+      empty.className="filter-preview-empty";
+      empty.textContent="No places match these filters. Try removing one.";
+      mount.appendChild(empty);
+      return;
+    }
+
+    const list=document.createElement("div");
+    list.className="filter-option-list";
+    [...S.base]
+      .sort((a,b)=>(a.l||"").localeCompare(b.l||"")||a.n.localeCompare(b.n))
+      .forEach(pl=>{
+        const row=document.createElement("div");
+        row.className="filter-option";
+        const name=document.createElement("b");
+        name.textContent=pl.n;
+        const meta=document.createElement("span");
+        meta.textContent=optionMeta(pl);
+        row.append(name,meta);
+        list.appendChild(row);
+      });
+    mount.appendChild(list);
+  }
+
+  function renderStageContext(id){
+    const mount=$(id);
+    if(!mount)return;
+    mount.replaceChildren();
+
+    const activeCount=S.pool.length;
+    const filteredCount=S.base.length;
+    const roomNarrowed=Boolean(S.why)&&activeCount!==filteredCount;
+
+    const copy=document.createElement("div");
+    copy.className="filter-context-copy";
+    const title=document.createElement("b");
+    title.textContent=roomNarrowed
+      ? activeCount+" "+(activeCount===1?"option":"options")+" now"
+      : filteredCount+" filtered "+(filteredCount===1?"option":"options");
+    const sub=document.createElement("span");
+    const summary=filterSummaryParts().join(" · ");
+    sub.textContent=roomNarrowed
+      ? "Started with "+filteredCount+" from Narrow it down"+(summary?" · "+summary:"")
+      : "From Narrow it down"+(summary?" · "+summary:"");
+    copy.append(title,sub);
+
+    const edit=document.createElement("button");
+    edit.type="button";
+    edit.className="filter-context-edit";
+    edit.textContent="Edit";
+    edit.onclick=()=>go(0);
+
+    mount.append(copy,edit);
+  }
+
+  function renderFilterViews(){
+    renderNarrowPreview();
+    renderStageContext("filterContext1");
+    renderStageContext("filterContext2");
+    const next=$("s0")?.querySelector('[data-next="1"]');
+    if(next)next.disabled=S.base.length===0;
+  }
+
+  paint=function(){
+    basePaint();
+    renderFilterViews();
+  };
+
+  pool=function(){
+    resetDecisionViews();
+    basePool();
+  };
+
+  window.renderFilterViews=renderFilterViews;
+})();
