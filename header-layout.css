@@ -1,0 +1,3 @@
+/* Keep the app brand as the only item in the top bar, aligned right. */
+.top{justify-content:flex-end}
+.top .mark{margin-left:auto}
