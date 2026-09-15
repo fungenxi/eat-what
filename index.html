@@ -77,7 +77,26 @@
   </div>
 </section>
 
+<section class="history-page hide" id="manageScrim" role="dialog" aria-modal="true" aria-labelledby="manageTitle">
+  <div class="history-shell manage-shell">
+    <div class="history-head">
+      <div>
+        <div class="lbl">Clean up data</div>
+        <h2 id="manageTitle">Manage places</h2>
+      </div>
+      <button class="history-close" id="manageClose" type="button" aria-label="Close manage places">×</button>
+    </div>
+    <p class="manage-note">Delete places you no longer want in recommendations. Deletions stay removed on this browser.</p>
+    <div class="field manage-search"><label for="manageSearch">Search</label><input id="manageSearch" type="search" placeholder="Search name, building or address" autocomplete="off"></div>
+    <div class="chips manage-areas" id="manageAreas"></div>
+    <div id="manageList" class="manage-list"></div>
+  </div>
+</section>
+
 <div class="quick-actions" id="quickActions" aria-hidden="true">
+  <button class="quick-action quick-manage" type="button" data-quick="manage" aria-label="Manage places">
+    <span class="quick-icon">−</span><span>Manage places</span>
+  </button>
   <button class="quick-action quick-history" type="button" data-quick="history" aria-label="Open history">
     <span class="quick-icon">↺</span><span>History</span>
   </button>
@@ -96,6 +115,7 @@
 <script src="core.js"></script>
 <script src="filters.js"></script>
 <script src="add-place.js"></script>
+<script src="manage-places.js"></script>
 <script src="rituals.js"></script>
 <script src="games.js"></script>
 <script src="verdict-nav.js"></script>
