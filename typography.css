@@ -1,0 +1,50 @@
+/* Slightly lighter type across the app — still bold, just less shouty. */
+.mark[data-brand="eat"],
+.top-time,
+.head,
+.big,
+.total,
+.winner,
+.sheet h2,
+.quick-icon,
+.visit-score,
+.filter-preview-head b,
+.filter-context-copy b,
+.winner-kicker{
+  font-weight:800;
+}
+
+.lbl,
+.pick,
+.step,
+.sw button,
+.dirs button,
+.pad button,
+.reveal,
+.wheelbox text,
+.face,
+.fact,
+.heads,
+.meta b,
+.today b,
+.quick-action,
+.history-head h2,
+.history-menu-panel button,
+.visit-copy b,
+.rating-caption,
+.filter-option b,
+.filter-context-edit,
+.tour-copy h3,
+.tour-skip,
+.tour-next{
+  font-weight:700;
+}
+
+.field label,
+.visit-meta,
+.filter-preview-head span,
+.filter-option span,
+.filter-context-copy span,
+.tour-copy p{
+  font-weight:600;
+}
