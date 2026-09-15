@@ -7,6 +7,7 @@
 const UNIT_PATTERN=/^(?:B?\d+[A-Z]?-\d+[A-Z]?(?:\/\d+[A-Z]?)?|\d{2}-\d+[A-Z]?)$/i;
 const ALLOWED_HALAL=new Set(["certified","not-certified","unknown"]);
 const ALLOWED_HOURS_SOURCE=new Set(["stall","building","unknown"]);
+const ALLOWED_STATUS=new Set(["active","temporarily-closed","permanently-closed"]);
 
 function dataSlug(value){
   return String(value||"")
@@ -37,7 +38,7 @@ function enrichMasterPlace(place){
   place.cuisine=place.c;
   place.type=typeFromCurrentCuisine(place.c);
   place.priceTier=place.p;
-  place.area="Civic District";
+  place.area=place.area||"Civic District";
   place.building=place.l;
   place.unit=hasUnit?rawLocation:null;
   place.locationHint=rawLocation&&!hasUnit?rawLocation:null;
@@ -53,7 +54,7 @@ function enrichMasterPlace(place){
   };
   place.hiddenGem=place.hiddenGem===true;
   place.newTag=place.new===true;
-  place.status="active";
+  place.status=place.status||"active";
   return place;
 }
 
@@ -88,18 +89,24 @@ function auditMasterPlaces(records){
 
     if(!ALLOWED_HOURS_SOURCE.has(place.hoursSource?.level))
       issues.push(label+": invalid hours source");
+
+    if(!ALLOWED_STATUS.has(place.status))
+      issues.push(label+": invalid status");
   });
 
   const counts={
     total:records.length,
+    active:records.filter(p=>p.status==="active").length,
+    temporarilyClosed:records.filter(p=>p.status==="temporarily-closed").length,
+    permanentlyClosed:records.filter(p=>p.status==="permanently-closed").length,
     stallHours:records.filter(p=>p.hoursSource?.level==="stall").length,
     buildingHours:records.filter(p=>p.hoursSource?.level==="building").length,
     unknownHours:records.filter(p=>p.hoursSource?.level==="unknown").length,
     recentlyCheckedHours:records.filter(p=>p.hoursSource?.checked).length,
     halalCertified:records.filter(p=>p.halalStatus==="certified").length,
     halalUnknown:records.filter(p=>p.halalStatus==="unknown").length,
-    hiddenGems:records.filter(p=>p.hiddenGem).length,
-    newTagged:records.filter(p=>p.newTag).length,
+    hiddenGems:records.filter(p=>p.hiddenGem&&p.status==="active").length,
+    newTagged:records.filter(p=>p.newTag&&p.status==="active").length,
     withUnit:records.filter(p=>p.unit).length,
     withAddress:records.filter(p=>p.address).length,
     withLocationHint:records.filter(p=>p.locationHint).length
