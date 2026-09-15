@@ -1,0 +1,93 @@
+/* Mobile resilience overrides. Keep the main visual language in styles.css. */
+
+/* Account for notches / home indicators on modern phones. */
+body{
+  padding-left:max(14px, env(safe-area-inset-left));
+  padding-right:max(14px, env(safe-area-inset-right));
+  padding-bottom:max(24px, calc(14px + env(safe-area-inset-bottom)));
+}
+
+/* Long restaurant names and free-form notes should never force horizontal scroll. */
+.pick span,.winner,.heads,.hours,.today li span,.logrow b,.vs button,.tile,.fact{
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+
+.fab{
+  bottom:max(22px, calc(14px + env(safe-area-inset-bottom)));
+}
+
+.scrim{
+  padding-bottom:max(20px, calc(12px + env(safe-area-inset-bottom)));
+}
+
+@media (max-width:480px){
+  body{padding-top:12px}
+  .app{max-width:none}
+
+  /* Preserve the segmented-line appearance while giving each segment a proper tap target. */
+  .nav{gap:6px;margin-bottom:14px}
+  .nav button{
+    position:relative;
+    height:32px;
+    background:transparent!important;
+    border-radius:0;
+  }
+  .nav button::before{
+    content:"";
+    position:absolute;
+    left:0;right:0;top:50%;
+    height:6px;
+    transform:translateY(-50%);
+    border-radius:99px;
+    background:rgba(255,255,255,.28);
+  }
+  .nav button[data-on="true"]::before{background:var(--cream)}
+
+  .head{
+    font-size:clamp(28px,9.5vw,40px);
+    margin-bottom:18px;
+  }
+
+  .panel{padding:14px;border-radius:18px}
+  .pick{font-size:18px;padding:15px 16px}
+  .step{min-height:48px;padding:12px 16px}
+  .big{min-height:52px}
+  .chip{min-height:40px}
+
+  /* iOS Safari zooms focused form controls below 16px. */
+  .field input{font-size:16px;min-height:46px}
+
+  .sheet{
+    max-height:calc(100dvh - 24px - env(safe-area-inset-bottom));
+    overflow-y:auto;
+    overscroll-behavior:contain;
+  }
+
+  .wheelbox svg{width:min(100%,330px)}
+  .winner{font-size:clamp(38px,13vw,58px)}
+}
+
+@media (max-width:390px){
+  /* The add-place two-column rows become cramped on narrow phones. */
+  .two{grid-template-columns:1fr;gap:0}
+  .sheet{padding:16px 14px 8px}
+  .sheet h2{font-size:22px}
+  .dirs{gap:7px}
+  .sw{gap:6px}
+  .sw button{font-size:13px}
+  .today{padding:12px 13px}
+}
+
+@media (max-width:340px){
+  .steps{gap:7px}
+  .step{font-size:14px;padding-left:12px;padding-right:12px}
+  .row2{grid-template-columns:1fr}
+  .pairs{flex-direction:column}
+  .pairs .big{width:100%}
+}
+
+@media (orientation:landscape) and (max-height:500px){
+  .scrim{place-items:start center}
+  .sheet{max-height:calc(100dvh - 16px)}
+}
