@@ -13,6 +13,24 @@ body{
   overflow-wrap:anywhere;
 }
 
+/* Tiny badge used for newly added hidden-gem recommendations. */
+.winner .new-tag{
+  display:inline-flex;
+  align-items:center;
+  vertical-align:top;
+  margin-left:8px;
+  padding:5px 7px 4px;
+  border-radius:99px;
+  background:var(--coral);
+  color:#fff;
+  font-size:10px;
+  line-height:1;
+  letter-spacing:.08em;
+  font-weight:900;
+  transform:translateY(-2px);
+  white-space:nowrap;
+}
+
 /* The app name is intentionally tappable. Keep it visually identical to the old wordmark. */
 .mark{
   appearance:none;
