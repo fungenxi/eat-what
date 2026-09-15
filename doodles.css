@@ -3,6 +3,7 @@
 /* ---------- top bar ---------- */
 .top{position:relative;overflow:visible}
 .top .mark,.top-time{position:relative;z-index:3}
+.top .mark{overflow:visible}
 .top-time{
   margin-left:auto;
   color:currentColor;
@@ -14,99 +15,43 @@
   white-space:nowrap;
   opacity:.92;
 }
-.brand-fx-layer{
+
+/* Brand tap: one lightweight steam/smoke puff. No moving illustrations. */
+.mark.brand-smoke::before,
+.mark.brand-smoke::after{
+  content:"";
   position:absolute;
-  z-index:2;
-  inset:-10px 0 -20px;
-  overflow:visible;
+  z-index:-1;
   pointer-events:none;
+  border:2px solid currentColor;
+  border-radius:54% 46% 58% 42% / 48% 58% 42% 52%;
+  opacity:0;
 }
-.brand-fx{
-  position:absolute;
-  display:block;
-  color:var(--cream);
-  pointer-events:none;
+.mark.brand-smoke::before{
+  right:-8px;
+  top:-5px;
+  width:10px;
+  height:10px;
+  box-shadow:9px -5px 0 -2px transparent,9px -5px 0 0 currentColor;
+  animation:brandSmokeA .72s var(--e) forwards;
 }
-.brand-fx svg{display:block;width:100%;height:100%;overflow:visible}
-.brand-fx .fx-line,.brand-fx .fx-wheel,.brand-fx .fx-steam,.brand-fx .fx-noodle,.brand-fx .fx-spark{
-  fill:none;
-  stroke:currentColor;
-  stroke-width:2.1;
-  stroke-linecap:round;
-  stroke-linejoin:round;
+.mark.brand-smoke::after{
+  right:-18px;
+  top:-9px;
+  width:7px;
+  height:7px;
+  animation:brandSmokeB .72s .06s var(--e) forwards;
 }
-.brand-fx .fx-bowl,.brand-fx .fx-plate{
-  fill:var(--mustard);
-  stroke:currentColor;
-  stroke-width:2.1;
-  stroke-linecap:round;
-  stroke-linejoin:round;
+@keyframes brandSmokeA{
+  0%{opacity:0;transform:translate(0,5px) scale(.45) rotate(-8deg)}
+  28%{opacity:.7}
+  100%{opacity:0;transform:translate(7px,-16px) scale(1.45) rotate(9deg)}
 }
-.brand-fx .fx-food{fill:none;stroke:var(--mustard);stroke-width:2;stroke-linecap:round}
-
-.brand-fx-scooter{
-  left:-74px;
-  top:4px;
-  width:72px;
-  height:30px;
-  animation:scooterRide 1.25s cubic-bezier(.24,.72,.28,1) forwards;
+@keyframes brandSmokeB{
+  0%{opacity:0;transform:translate(0,4px) scale(.4)}
+  32%{opacity:.55}
+  100%{opacity:0;transform:translate(5px,-13px) scale(1.35)}
 }
-.brand-fx-scooter .fx-wheel{transform-box:fill-box;transform-origin:center;animation:wheelSpin .32s linear infinite}
-@keyframes scooterRide{
-  0%{left:-74px;transform:translateY(1px) rotate(-1deg);opacity:0}
-  10%{opacity:1}
-  48%{transform:translateY(-1px) rotate(.5deg)}
-  90%{opacity:1}
-  100%{left:calc(100% + 8px);transform:translateY(1px);opacity:0}
-}
-@keyframes wheelSpin{to{transform:rotate(360deg)}}
-
-.brand-fx-bowl{
-  left:92px;
-  top:5px;
-  width:48px;
-  height:38px;
-  animation:bowlHop 1.05s var(--e) forwards;
-}
-.brand-fx-bowl .s1{animation:brandSteam 1s ease-in-out infinite alternate}
-.brand-fx-bowl .s2{animation:brandSteam 1s .16s ease-in-out infinite alternate}
-@keyframes bowlHop{
-  0%{opacity:0;transform:translateY(12px) scale(.68) rotate(-7deg)}
-  38%{opacity:1;transform:translateY(-7px) scale(1.06) rotate(3deg)}
-  70%{opacity:1;transform:translateY(0) scale(1) rotate(-1deg)}
-  100%{opacity:0;transform:translateY(-5px) scale(.96)}
-}
-@keyframes brandSteam{from{transform:translateX(-1px);opacity:.35}to{transform:translateX(1px);opacity:.9}}
-
-.brand-fx-plate{
-  left:58%;
-  top:5px;
-  width:50px;
-  height:36px;
-  animation:plateFlip 1.05s var(--e) forwards;
-}
-@keyframes plateFlip{
-  0%{opacity:0;transform:translate(-28px,8px) rotate(-35deg) scale(.68)}
-  42%{opacity:1;transform:translate(0,-7px) rotate(18deg) scale(1.04)}
-  72%{opacity:1;transform:translate(14px,0) rotate(8deg) scale(1)}
-  100%{opacity:0;transform:translate(28px,-3px) rotate(22deg) scale(.92)}
-}
-
-.brand-fx-chopsticks{
-  left:104px;
-  top:-2px;
-  width:46px;
-  height:38px;
-  animation:chopPop 1s var(--e) forwards;
-}
-.brand-fx-chopsticks .fx-spark{stroke:var(--mustard);transform-origin:center;animation:chopSpark .42s .12s var(--e) both}
-@keyframes chopPop{
-  0%{opacity:0;transform:translateY(-9px) rotate(-8deg) scale(.7)}
-  38%{opacity:1;transform:translateY(2px) rotate(4deg) scale(1.07)}
-  74%{opacity:1;transform:none}
-  100%{opacity:0;transform:translateY(-3px)}
-}
-@keyframes chopSpark{0%{opacity:0;transform:scale(.2) rotate(-20deg)}70%{opacity:1;transform:scale(1.25) rotate(8deg)}100%{opacity:1;transform:scale(1)}}
 
 /* ---------- title doodles ---------- */
 .title-motion{
@@ -118,7 +63,9 @@
   overflow:visible;
 }
 .title-copy{position:relative;z-index:2;display:inline-block}
+.title-fate .title-copy{color:var(--mustard)}
 .title-fate .fate-word{color:var(--cream)!important}
+.title-fate em{color:var(--mustard)!important}
 
 .title-doodle{
   position:absolute;
@@ -303,12 +250,10 @@
   .title-spark{right:-16px;width:22px;height:22px}
   .title-swoop{width:94px}
   .new-tag{font-size:8px;margin-left:6px}
-  .brand-fx-bowl{left:80px}
-  .brand-fx-chopsticks{left:86px}
 }
 
 @media (prefers-reduced-motion:reduce){
-  .title-motion .title-copy,.title-doodle path,.winner-reveal::before,.winner-kicker,.winner-reveal .winner,.star-fill,.history-empty-art path{animation:none!important}
+  .title-motion .title-copy,.title-doodle path,.winner-reveal::before,.winner-kicker,.winner-reveal .winner,.star-fill,.history-empty-art path,.mark.brand-smoke::before,.mark.brand-smoke::after{animation:none!important}
   .winner-kicker,.winner-reveal .winner{opacity:1;transform:none}
-  .brand-fx{display:none!important}
+  .mark.brand-smoke::before,.mark.brand-smoke::after{display:none!important}
 }
