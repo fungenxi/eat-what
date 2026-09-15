@@ -3,26 +3,38 @@ function chip(t,fn){const b=document.createElement("button");
   b.className="chip";b.type="button";b.textContent=t;b.setAttribute("aria-pressed","false");
   b.onclick=()=>fn(b);return b;}
 
-const areaSort=(a,b)=>a==="Civic District"&&b!=="Civic District"?-1:
-  b==="Civic District"&&a!=="Civic District"?1:a.localeCompare(b);
+const areaSort=(a,b)=>{
+  const ai=AREA_OPTIONS.indexOf(a),bi=AREA_OPTIONS.indexOf(b);
+  if(ai!==-1||bi!==-1){
+    if(ai===-1)return 1;
+    if(bi===-1)return -1;
+    return ai-bi;
+  }
+  return a.localeCompare(b);
+};
 
 function buildFilters(){
   $("fArea").innerHTML="";$("fLoc").innerHTML="";$("fCui").innerHTML="";
 
-  const areas=[...new Set(PLACES.map(placeArea))].sort(areaSort);
-  if(!areas.includes(S.area))S.area=areas[0]||null;
+  const areas=[...new Set([...AREA_OPTIONS,...PLACES.map(placeArea)])].sort(areaSort);
+  const availableAreas=areas.filter(a=>PLACES.some(p=>placeArea(p)===a));
+  if(!availableAreas.includes(S.area))S.area=availableAreas[0]||"CBD";
   const areaPanel=$("fAreaPanel");
-  if(areaPanel)areaPanel.classList.toggle("hide",areas.length<=1);
+  if(areaPanel)areaPanel.classList.remove("hide");
 
   areas.forEach(a=>{
-    const b=chip(a,()=>{
-      if(S.area===a)return;
+    const count=PLACES.filter(p=>placeArea(p)===a).length;
+    const b=chip(count?a:a+" · soon",()=>{
+      if(!count||S.area===a)return;
       S.area=a;
       S.loc.clear();
       buildFilters();
       pool();
     });
+    b.disabled=!count;
+    b.classList.toggle("area-soon",!count);
     b.setAttribute("aria-pressed",String(S.area===a));
+    if(!count)b.setAttribute("aria-label",a+" coming soon");
     $("fArea").appendChild(b);
   });
 
