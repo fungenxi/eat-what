@@ -18,7 +18,6 @@ function hoursBadge(pl){
 function win(pl,how){
   document.body.style.setProperty("--bg","var(--mustard)");
   document.querySelector(".mark").style.color="var(--ink)";
-  
   document.querySelectorAll("#nav button").forEach(x=>x.style.background="rgba(24,20,25,.2)");
   const v=$("sv");
   const TICK='<svg viewBox="0 0 24 24"><path d="M5 13l4.5 4.5L19 7"/></svg>';
@@ -46,79 +45,119 @@ function restore(){
   document.querySelectorAll("#nav button").forEach(x=>x.style.background="");
 }
 
-/* ---------- Been there + Yum score ---------- */
+/* ---------- visit history + rating ---------- */
 const RATING_WORDS=["","Nah","Okay","Nice","Shiok","Go again"];
 
-function visitKey(x){
-  return x.key||x.id||[x.n,x.l||"",x.area||""].join("|");
+function makeVisitId(){
+  return Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,8);
+}
+
+function persistHistory(){
+  writeLocal(STORAGE.log,S.log);
 }
 
 function normalizeHistory(){
-  const merged=[],seen=new Map();
-  S.log.forEach(item=>{
-    if(!item||typeof item.n!=="string")return;
-    const key=visitKey(item),count=Math.max(1,Number(item.visits)||1);
-    if(!seen.has(key)){
-      const copy={...item,key,visits:count};
-      seen.set(key,copy);merged.push(copy);
-    }else{
-      const first=seen.get(key);
-      first.visits+=count;
-      if((first.rating===undefined||first.rating===null)&&item.rating)first.rating=item.rating;
-      if(!first.ts&&item.ts)first.ts=item.ts;
+  let changed=false;
+  S.log=S.log.filter(item=>item&&typeof item.n==="string").map((item,index)=>{
+    const copy={...item};
+    if(!copy.visitId){
+      copy.visitId="legacy-"+(copy.ts||Date.now())+"-"+index;
+      changed=true;
     }
-  });
-  S.log=merged;
-}
-
-function saveVisitHistory(){
-  writeLocal(STORAGE.log,S.log);
+    if(!copy.ts){copy.ts=Date.now()-index;changed=true;}
+    if(copy.rating===undefined)copy.rating=null;
+    if(Number(copy.visits)>1&&!copy.legacyVisits){
+      copy.legacyVisits=Number(copy.visits);
+      changed=true;
+    }
+    delete copy.visits;
+    delete copy.key;
+    return copy;
+  }).sort((a,b)=>(Number(b.ts)||0)-(Number(a.ts)||0));
+  if(changed)persistHistory();
 }
 
 function recordVisit(pl,how){
   normalizeHistory();
-  const key=pl.id||[pl.n,pl.l||"",pl.area||""].join("|");
-  const i=S.log.findIndex(x=>x.id&&pl.id?x.id===pl.id:(!x.id&&x.n===pl.n));
-  if(i>=0){
-    const old=S.log.splice(i,1)[0];
-    S.log.unshift({...old,key,id:pl.id||old.id||null,n:pl.n,l:pl.l,area:pl.area||"Civic District",how,ts:Date.now(),visits:(Number(old.visits)||1)+1});
-  }else{
-    S.log.unshift({key,id:pl.id||null,n:pl.n,l:pl.l||"",area:pl.area||"Civic District",how,ts:Date.now(),visits:1,rating:null});
-  }
-  saveVisitHistory();
+  S.log.unshift({
+    visitId:makeVisitId(),
+    id:pl.id||null,
+    n:pl.n,
+    l:pl.l||"",
+    area:pl.area||"Civic District",
+    how:how||"",
+    ts:Date.now(),
+    rating:null
+  });
+  persistHistory();
 }
 
-function rateVisit(index,rating){
-  const item=S.log[index];
+function rateVisit(visitId,rating){
+  const item=S.log.find(x=>x.visitId===visitId);
   if(!item)return;
   item.rating=rating;
   item.ratedAt=Date.now();
-  saveVisitHistory();
+  persistHistory();
   renderLog();
 }
 
-function visitDate(ts){
-  if(!ts)return "";
+function visitDayKey(ts){
+  const d=new Date(ts);
+  if(Number.isNaN(d.getTime()))return "earlier";
+  return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-");
+}
+
+function visitDayLabel(ts){
+  const d=new Date(ts);
+  if(Number.isNaN(d.getTime()))return "Earlier";
+  const now=new Date();
+  const todayKey=visitDayKey(now.getTime());
+  const yesterday=new Date(now);yesterday.setDate(now.getDate()-1);
+  const key=visitDayKey(ts);
+  if(key===todayKey)return "Today · "+d.toLocaleDateString("en-SG",{day:"numeric",month:"short"});
+  if(key===visitDayKey(yesterday.getTime()))return "Yesterday · "+d.toLocaleDateString("en-SG",{day:"numeric",month:"short"});
+  return d.toLocaleDateString("en-SG",{weekday:"short",day:"numeric",month:"short",year:d.getFullYear()===now.getFullYear()?undefined:"numeric"});
+}
+
+function visitTime(ts){
   const d=new Date(ts);
   if(Number.isNaN(d.getTime()))return "";
-  return d.toLocaleDateString("en-SG",{day:"numeric",month:"short"});
+  return d.toLocaleTimeString("en-SG",{hour:"numeric",minute:"2-digit"});
 }
 
 function openHistory(){
   renderLog();
-  const scrim=$("historyScrim");
-  if(!scrim)return;
-  scrim.classList.remove("hide");
+  const page=$("historyScrim");
+  if(!page)return;
+  page.classList.remove("hide");
   document.body.classList.add("modal-open");
   $("historyClose")?.focus();
 }
 
 function closeHistory(){
-  const scrim=$("historyScrim");
-  if(!scrim)return;
-  scrim.classList.add("hide");
+  const page=$("historyScrim");
+  if(!page)return;
+  page.classList.add("hide");
   document.body.classList.remove("modal-open");
   $("quickFab")?.focus();
+}
+
+function renderVisitCard(l){
+  const rating=Number(l.rating)||0;
+  const bits=[];
+  if(l.l)bits.push(l.l);
+  const time=visitTime(l.ts);if(time)bits.push(time);
+  if(l.how)bits.push(l.how);
+  if(Number(l.legacyVisits)>1)bits.push(l.legacyVisits+" earlier visits were saved together");
+  const buttons=[1,2,3,4,5].map(n=>
+    '<button class="rating-btn" type="button" data-visit="'+l.visitId+'" data-rating="'+n+'" '+
+    'aria-pressed="'+String(rating===n)+'" aria-label="Rate '+l.n+' '+n+' out of 5 — '+RATING_WORDS[n]+'" title="'+RATING_WORDS[n]+'">'+n+'</button>'
+  ).join("");
+  return '<div class="visit-card">'+
+    '<div class="visit-top"><div class="visit-copy"><b>'+l.n+'</b><span class="visit-meta">'+bits.join(" · ")+'</span></div>'+
+    '<span class="visit-score '+(rating?'':'unrated')+'">'+(rating?rating+"/5":"Rate")+'</span></div>'+
+    '<div class="rating-scale" role="group" aria-label="Rate '+l.n+' out of 5">'+buttons+'</div>'+
+    '<div class="rating-caption">'+(rating?RATING_WORDS[rating]:"How was it?")+'</div></div>';
 }
 
 function renderLog(){
@@ -126,32 +165,32 @@ function renderLog(){
   const list=$("logList"),empty=$("historyEmpty");
   if(!list)return;
   if(empty)empty.classList.toggle("hide",S.log.length>0);
-  list.innerHTML=S.log.map((l,index)=>{
-    const rating=Number(l.rating)||0;
-    const bits=[];
-    if((Number(l.visits)||1)>1)bits.push((Number(l.visits)||1)+" visits");
-    if(l.how)bits.push(l.how);
-    const date=visitDate(l.ts);if(date)bits.push(date);
-    const buttons=[1,2,3,4,5].map(n=>
-      '<button class="rating-btn" type="button" data-visit="'+index+'" data-rating="'+n+'" '+
-      'aria-pressed="'+String(rating===n)+'" aria-label="Rate '+l.n+' '+n+' out of 5 — '+RATING_WORDS[n]+'" title="'+RATING_WORDS[n]+'">'+n+'</button>'
-    ).join("");
-    return '<div class="visit-card">'+
-      '<div class="visit-top"><div class="visit-copy"><b>'+l.n+'</b><span class="visit-meta">'+bits.join(" · ")+'</span></div>'+
-      '<span class="visit-score '+(rating?'':'unrated')+'">'+(rating?rating+"/5":"Rate")+'</span></div>'+
-      '<div class="rating-scale" role="group" aria-label="Rate '+l.n+' out of 5">'+buttons+'</div>'+
-      '<div class="rating-caption">'+(rating?RATING_WORDS[rating]:"How was it?")+'</div></div>';
-  }).join("");
+  if(!S.log.length){list.innerHTML="";return;}
+
+  const groups=[];
+  S.log.forEach(item=>{
+    const key=visitDayKey(item.ts);
+    let group=groups[groups.length-1];
+    if(!group||group.key!==key){
+      group={key,label:visitDayLabel(item.ts),items:[]};
+      groups.push(group);
+    }
+    group.items.push(item);
+  });
+
+  list.innerHTML=groups.map(group=>
+    '<section class="history-day"><div class="history-date">'+group.label+'</div>'+group.items.map(renderVisitCard).join("")+'</section>'
+  ).join("");
+
   list.querySelectorAll(".rating-btn").forEach(b=>{
-    b.onclick=()=>rateVisit(Number(b.dataset.visit),Number(b.dataset.rating));
+    b.onclick=()=>rateVisit(b.dataset.visit,Number(b.dataset.rating));
   });
 }
 
-const historyScrim=$("historyScrim");
-if(historyScrim){
+const historyPage=$("historyScrim");
+if(historyPage){
   $("historyClose").onclick=closeHistory;
-  historyScrim.onclick=e=>{if(e.target===historyScrim)closeHistory();};
   document.addEventListener("keydown",e=>{
-    if(e.key==="Escape"&&!historyScrim.classList.contains("hide"))closeHistory();
+    if(e.key==="Escape"&&!historyPage.classList.contains("hide"))closeHistory();
   });
 }
