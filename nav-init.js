@@ -53,11 +53,10 @@ if(brand){
   paintBrand();
   brand.onclick=()=>{
     brandIndex=(brandIndex+1)%BRAND_NAMES.length;
-    brand.classList.remove("brand-pop","brand-smoke");
+    brand.classList.remove("brand-pop");
     void brand.offsetWidth;
     paintBrand();
-    brand.classList.add("brand-pop","brand-smoke");
-    window.setTimeout(()=>brand.classList.remove("brand-smoke"),850);
+    brand.classList.add("brand-pop");
   };
 }
 
