@@ -1,10 +1,17 @@
 const COLOURS=[
- {k:"white",hex:"#F2EDE2",fg:"#181419",t:"White",bd:"rgba(24,20,25,.18)"},
- {k:"red",hex:"#C4392B",fg:"#FFFFFF",t:"Red",bd:"transparent"},
- {k:"green",hex:"#3B7042",fg:"#FFFFFF",t:"Green",bd:"transparent"},
- {k:"brown",hex:"#6E4526",fg:"#FFFFFF",t:"Brown",bd:"transparent"},
- {k:"blue",hex:"#2C4870",fg:"#FFFFFF",t:"Blue",bd:"transparent"},
- {k:"black",hex:"#1C1B1E",fg:"#FFFFFF",t:"Black",bd:"transparent"}
+ {k:"white",hex:"#F2EDE2",fg:"#181419",t:"White",bd:"rgba(24,20,25,.18)",match:["white"]},
+ {k:"black",hex:"#1C1B1E",fg:"#FFFFFF",t:"Black",bd:"transparent",match:["brown","red"]},
+ {k:"grey",hex:"#8E8E93",fg:"#FFFFFF",t:"Grey",bd:"transparent",match:["white","brown"]},
+ {k:"navy",hex:"#1E3158",fg:"#FFFFFF",t:"Navy",bd:"transparent",match:["brown","red"]},
+ {k:"blue",hex:"#2C5F9E",fg:"#FFFFFF",t:"Blue",bd:"transparent",match:["white","green"]},
+ {k:"beige",hex:"#D9C7A2",fg:"#181419",t:"Beige",bd:"rgba(24,20,25,.12)",match:["brown","white"]},
+ {k:"brown",hex:"#6E4526",fg:"#FFFFFF",t:"Brown",bd:"transparent",match:["brown"]},
+ {k:"red",hex:"#C4392B",fg:"#FFFFFF",t:"Red",bd:"transparent",match:["red"]},
+ {k:"pink",hex:"#E990AF",fg:"#181419",t:"Pink",bd:"transparent",match:["red","white"]},
+ {k:"orange",hex:"#E77A2D",fg:"#181419",t:"Orange",bd:"transparent",match:["red","brown"]},
+ {k:"yellow",hex:"#E8C547",fg:"#181419",t:"Yellow",bd:"transparent",match:["brown","white"]},
+ {k:"green",hex:"#3B7042",fg:"#FFFFFF",t:"Green",bd:"transparent",match:["green"]},
+ {k:"purple",hex:"#6B4C8A",fg:"#FFFFFF",t:"Purple",bd:"transparent",match:["red","brown"]}
 ];
 
 /* monochrome line icons */
