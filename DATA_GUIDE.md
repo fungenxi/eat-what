@@ -4,18 +4,18 @@ This file is the maintenance guide for the shared restaurant list in `data.js`.
 
 ## Current dataset
 
-There are currently **31 shared places**.
+There are currently **37 shared places**.
 
 Opening-hours quality after the 15 Sep 2026 verification pass:
 
-- **31** have venue/stall-specific hours
+- **37** have venue/stall-specific hours
 - **0** rely only on generic mall hours
 - **0** have unverified hours
-- **25** records were actively checked on 15 Sep 2026 and carry a source label/date
+- **31** records carry a verification date and source label
 
 Halal data:
 
-- **5** are explicitly marked halal-certified
+- **6** are explicitly marked halal-certified
 - all other records are treated as **unknown**, not automatically as "not halal"
 
 The stale **109 Yong Tau Fu @ Funan** record was removed. Current sources place 109 Yong Tau Foo at Circular Road, not inside Funan.
@@ -36,13 +36,15 @@ The stale **109 Yong Tau Fu @ Funan** record was removed. Current sources place 
 | `unit` | Actual unit number only |
 | `locationHint` | Human directions when needed |
 | `address` | Full address when verified |
-| `colour` | Food-colour value used by Colour census |
+| `colour` | Broad food-colour family used by Colour census |
 | `halalStatus` | `certified`, `not-certified`, or `unknown` |
 | `hours` | Opening-hours object |
 | `hoursSource.level` | `stall`, `building`, or `unknown` |
 | `hoursSource.checked` | Date hours were last checked |
 | `hoursSource.url` | Source URL where one is available |
 | `hoursSource.label` | Human-readable source description |
+| `hiddenGem` | Editorial flag for genuinely under-the-radar recommendations |
+| `newTag` | Derived from `new:true`; controls the tiny `NEW` badge |
 | `status` | `active` for now |
 
 The existing short fields (`n`, `c`, `p`, `l`, `w`, `col`, `h`, `src`) remain because the current UI uses them.
@@ -88,6 +90,58 @@ Generic `Clarke Quay Food Court` was replaced with the current **Sinfoodie** foo
 
 The Yuen Kee Dumpling Funan record now also has verified daily opening hours of **10am–9pm**, based on the user-provided business listing. The Chinese name `袁记云饺` is retained as an alternate name in the data.
 
+A new **Bulkhaul House** location appears because Supreme Pork Chop Rice is at #B1-01 there. Point the Way uses a neutral point icon for locations that do not yet have a deliberately configured physical direction; the app should not invent an arrow direction.
+
+## Colour census
+
+The room/outfit colours are now deliberately broader than the food-colour data.
+
+Current outfit choices:
+
+- White
+- Black
+- Grey
+- Navy
+- Blue
+- Beige
+- Brown
+- Red
+- Pink
+- Orange
+- Yellow
+- Green
+- Purple
+
+Restaurants still keep a simpler food-colour family such as `white`, `brown`, `red`, or `green`. Common clothing colours map to one or two nearby food-colour families so the ritual stays fun instead of returning zero matches most of the time.
+
+For example, `grey` can match white or brown food; `pink` can match red or white; `blue` can match white or green. This mapping is intentionally playful rather than a factual restaurant attribute.
+
+## Hidden gems and NEW badge
+
+`hiddenGem:true` is an editorial flag. Only use it where the place is reasonably supported as tucked-away, under-the-radar, or a local find; do not apply it just because a restaurant is newly added.
+
+`new:true` means **newly added to Eat What?!**, not newly opened in real life. It displays a small `NEW` badge beside the winning restaurant name.
+
+Current hidden-gem / NEW entries:
+
+- **King Umar Teh Tarik Cafe** — #01-08 The Adelphi; under-the-radar prata, biryani and teh tarik, with goreng pisang typically appearing around 3pm
+- **Supreme Pork Chop Rice** — #B1-01 Bulkhaul House; old-school Taiwanese pork chop rice in a basement location near City Hall
+
+The badge can be removed later simply by deleting `new:true`; the place can remain `hiddenGem:true` permanently if that editorial description still fits.
+
+## Researched additions — 15 Sep 2026
+
+Six recommendations were added after a web verification pass:
+
+1. **King Umar Teh Tarik Cafe** — Adelphi #01-08 — Indian Muslim — hidden gem
+2. **Flavours by Sauté** — Funan #B1-30 — vegetarian/vegan fusion, halal-certified
+3. **Godmama** — Funan #04-07 — modern Peranakan
+4. **Nalan** — Capitol #B2-54 — Indian vegetarian
+5. **Supreme Pork Chop Rice** — Bulkhaul House #B1-01 — Taiwanese — hidden gem
+6. **The Masses** — Capitol #01-84 — Franco-Asian
+
+The source label, verification date and URL are stored on each record where available.
+
 ## Halal rule
 
 Absence of a halal flag must not be interpreted as "not halal".
@@ -98,7 +152,7 @@ Use:
 - `not-certified` only when that status has actually been verified
 - `unknown` when it has not been checked
 
-Current verified halal records include Qi Ji, Dapur Penyet, The Tree Cafe, Makanan Bollywood, and Hatsumi Donburi & Soba.
+Current verified halal records include Qi Ji, Dapur Penyet, The Tree Cafe, Makanan Bollywood, Hatsumi Donburi & Soba, and Flavours by Sauté.
 
 ## Price tiers
 
@@ -118,14 +172,18 @@ The current values are still preserved for now. They mix cuisines and venue type
 - Drinks
 - Cai fan
 - Heritage
+- Vegetarian
+- Indian Vegetarian
+- Franco-Asian
 
-This is the next meaningful cleanup area once hours/location data are stable. `type` already separates `Food court`, `Cafe`, and `Drinks` conceptually so a future migration can be gradual.
+This is the next meaningful cleanup area now that hours/location data are stable. `type` already separates `Food court`, `Cafe`, and `Drinks` conceptually so a future migration can be gradual.
 
 ## Items still needing verification
 
 - **Punggol Nasi Lemak** — business branding may use `Ponggol`; preserve the current name until verified
 - older stall-specific records without `hoursChecked` should eventually receive a provenance pass
-- all `colour` values are subjective and worth a human sanity pass
+- all food `colour` values are subjective and worth a human sanity pass
+- hidden-gem labels should be periodically reviewed rather than automatically assigned to every niche restaurant
 
 ## Adding a new shared place
 
@@ -141,6 +199,8 @@ For now, add it to `MASTER_PLACES` in `data.js`. At minimum collect:
 8. Opening-hours source and checked date
 9. Notes only when useful
 10. Food colour for Colour census
+11. `hiddenGem:true` only when editorially justified
+12. `new:true` only while you want the temporary NEW badge shown
 
 After deployment, open the browser console and inspect:
 
