@@ -43,6 +43,7 @@ function go(n){
   }
 
   const fromStage=S.stage;
+  if(fromStage===2&&n!==2&&typeof window.cancelActiveGame==="function")window.cancelActiveGame();
 
   /* Going straight from Narrow to Ask/Fate starts from the current filters,
      rather than accidentally carrying an older Ask-the-room subset. */
