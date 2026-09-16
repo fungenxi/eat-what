@@ -36,15 +36,24 @@
   scrollbar-width:thin;
 }
 .filter-option{
+  width:100%;
   display:flex;
   align-items:flex-start;
   justify-content:space-between;
   gap:12px;
   padding:10px 11px;
+  border:0;
   border-radius:12px;
   background:var(--cream);
   color:var(--ink);
+  font:inherit;
+  text-align:left;
+  cursor:pointer;
+  transition:transform .1s var(--e),background .14s var(--e);
 }
+.filter-option:active{transform:scale(.985)}
+.filter-option:hover{background:#fff}
+.filter-option:focus-visible{outline:3px solid var(--mustard);outline-offset:2px}
 .filter-option b{
   min-width:0;
   font-size:13px;
@@ -113,6 +122,9 @@
 }
 .filter-context-edit:active{transform:scale(.94)}
 .filter-context-edit:focus-visible{outline:2px solid var(--mustard);outline-offset:2px}
+
+/* With zero or one candidate there is nothing left to decide socially/randomly. */
+.nav button:disabled{opacity:.34;cursor:default}
 
 @media (max-width:390px){
   .filter-option{display:block}
