@@ -4,15 +4,15 @@ function hoursBadge(pl){
   if(st==="unknown")
     return '<div class="hours na"><span class="dot"></span>Opening hours not confirmed</div>';
   if(st==="closed")
-    return '<div class="hours off"><span class="dot"></span>Closed right now. '+line+'</div>';
+    return '<div class="hours off"><span class="dot"></span>Closed right now. '+escapeHtml(line||"Closed today")+'</div>';
   if(pl.src==="mall")
-    return '<div class="hours approx"><span class="dot"></span><span>Building is open, '+line+
+    return '<div class="hours approx"><span class="dot"></span><span>Building is open, '+escapeHtml(line||"")+
       '<small>Stall hours not confirmed</small></span></div>';
   if(pl.src==="user")
-    return '<div class="hours approx"><span class="dot"></span><span>'+(st==="open"?"Open now, ":"Hours: ")+line+
+    return '<div class="hours approx"><span class="dot"></span><span>'+(st==="open"?"Open now, ":"Hours: ")+escapeHtml(line||"")+
       '<small>Saved on this device</small></span></div>';
   return '<div class="hours on"><span class="dot"></span>Open now, '+
-    (m!==null&&m<=45?'closes in '+m+' minutes':line)+'</div>';
+    (m!==null&&m<=45?'closes in '+m+' minutes':escapeHtml(line||""))+'</div>';
 }
 
 function hoursForDayIndex(pl,dayIndex){
@@ -36,13 +36,14 @@ function weeklyHoursHtml(pl){
   const rows=order.map(([day,label])=>'<div class="hours-row"><span>'+label+'</span><b>'+compactHours(hoursForDayIndex(pl,day))+'</b></div>').join("");
   const checked=pl.hoursChecked?new Date(pl.hoursChecked+"T00:00:00").toLocaleDateString("en-SG",{day:"numeric",month:"short",year:"numeric"}):null;
   const source=[checked?"Checked "+checked:null,pl.hoursSourceLabel||null].filter(Boolean).join(" · ");
-  return '<details class="place-info hours-week"><summary><span>Opening hours</span><strong>See full week</strong></summary>'+rows+(source?'<small>'+source+'</small>':'')+'</details>';
+  return '<details class="place-info hours-week"><summary><span>Opening hours</span><strong>See full week</strong></summary>'+rows+(source?'<small>'+escapeHtml(source)+'</small>':'')+'</details>';
 }
 
 function locationHtml(pl){
   const where=[pl.l,pl.w].filter(Boolean).join(" · ");
   const mapLink=pl.address?'<a class="detail-link" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(pl.address)+'" target="_blank" rel="noopener">Open in Maps ↗</a>':'';
-  return '<div class="place-info"><div class="detail-label">Find it</div><b>'+where+'</b>'+(pl.address?'<span>'+pl.address+'</span>':'<span>Full address not recorded yet.</span>')+mapLink+'</div>';
+  return '<div class="place-info"><div class="detail-label">Find it</div><b>'+escapeHtml(where)+'</b>'+
+    (pl.address?'<span>'+escapeHtml(pl.address)+'</span>':'<span>Full address not recorded yet.</span>')+mapLink+'</div>';
 }
 
 function winnerDoodleHtml(pl){
@@ -54,23 +55,24 @@ function winnerDoodleHtml(pl){
     '</svg>'+
     '<svg class="winner-spark one" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5c.4 3 1.5 4.2 4.4 4.8C9.5 6.9 8.4 8.2 8 11.3 7.5 8.2 6.4 6.9 3.5 6.3 6.4 5.7 7.5 4.5 8 1.5Z"/></svg>'+
     '<svg class="winner-spark two" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2c.3 2.4 1.2 3.4 3.5 3.9C9.2 6.4 8.3 7.5 8 9.9 7.6 7.5 6.8 6.4 4.5 5.9 6.8 5.4 7.6 4.4 8 2Z"/></svg>'+
-    '<div class="winner">'+pl.n+(pl.new?'<span class="new-tag">NEW</span>':'')+'</div></div>';
+    '<div class="winner">'+escapeHtml(pl.n)+(pl.new?'<span class="new-tag">NEW</span>':'')+'</div></div>';
 }
 
 function win(pl,how){
+  if(!pl){if(typeof go==="function")go(0);return;}
   document.body.style.setProperty("--bg","var(--mustard)");
-  document.querySelector(".mark").style.color="var(--ink)";
+  const mark=document.querySelector(".mark");if(mark)mark.style.color="var(--ink)";
   document.querySelectorAll("#nav button").forEach(x=>x.style.background="rgba(24,20,25,.2)");
   const v=$("sv");
   const TICK='<svg viewBox="0 0 24 24"><path d="M5 13l4.5 4.5L19 7"/></svg>';
   const REDO='<svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/></svg>';
   v.innerHTML=winnerDoodleHtml(pl)+
-    '<div class="facts"><span class="fact">'+pl.l+(pl.w?" "+pl.w:"")+'</span>'+
-    '<span class="fact open">'+pl.c+'</span><span class="fact open">'+$$(pl.p)+'</span></div>'+
+    '<div class="facts"><span class="fact">'+escapeHtml([pl.l,pl.w].filter(Boolean).join(" "))+'</span>'+
+    '<span class="fact open">'+escapeHtml(pl.c)+'</span><span class="fact open">'+$$(pl.p)+'</span></div>'+
     hoursBadge(pl)+locationHtml(pl)+weeklyHoursHtml(pl)+
-    (specialToday(pl,new Date())?'<div class="heads">'+specialToday(pl,new Date())+'.</div>':'')+
-    (pl.note?'<div class="heads">'+pl.note+'</div>':'')+
-    (S.why?'<div class="heads">Because '+S.why+'.</div>':'')+
+    (specialToday(pl,new Date())?'<div class="heads">'+escapeHtml(specialToday(pl,new Date()))+'.</div>':'')+
+    (pl.note?'<div class="heads">'+escapeHtml(pl.note)+'</div>':'')+
+    (S.why?'<div class="heads">Because '+escapeHtml(S.why)+'.</div>':'')+
     '<div class="row2">'+
       '<button class="big yes" id="yes"><span class="act">'+TICK+'Going</span></button>'+
       '<button class="big no" id="again"><span class="act">'+REDO+'Again</span></button>'+
@@ -80,10 +82,13 @@ function win(pl,how){
   $("yes").onclick=()=>{recordVisit(pl,how);renderLog();
     $("yes").innerHTML='<span class="act">'+TICK+'Enjoy</span>';
     $("yes").disabled=true;$("again").disabled=true;};
-  $("again").onclick=()=>{restore();v.classList.add("hide");go(2);runMech(S.mech);};
+  $("again").onclick=()=>{
+    restore();v.classList.add("hide");
+    if(S.mech&&S.pool.length>1){go(2);runMech(S.mech);}else go(0);
+  };
 }
 function restore(){
-  document.querySelector(".mark").style.color="";
+  const mark=document.querySelector(".mark");if(mark)mark.style.color="";
   document.querySelectorAll("#nav button").forEach(x=>x.style.background="");
 }
 
@@ -115,17 +120,17 @@ function normalizeHistory(){
   let changed=false;
   S.log=S.log.filter(item=>item&&typeof item.n==="string").map((item,index)=>{
     const copy={...item};
-    if(!copy.visitId){
-      copy.visitId="legacy-"+(copy.ts||Date.now())+"-"+index;
-      changed=true;
-    }
+    if(!copy.visitId){copy.visitId="legacy-"+(copy.ts||Date.now())+"-"+index;changed=true;}
     if(!copy.ts){copy.ts=Date.now()-index;changed=true;}
     if(copy.rating===undefined)copy.rating=null;
-    if(copy.area==="Civic District"){copy.area="CBD";changed=true;}
-    if(Number(copy.visits)>1&&!copy.legacyVisits){
-      copy.legacyVisits=Number(copy.visits);
-      changed=true;
+    if(copy.rating!==null){
+      const r=Number(copy.rating);
+      const safe=Number.isFinite(r)?Math.max(.5,Math.min(5,Math.round(r*2)/2)):null;
+      if(safe!==copy.rating){copy.rating=safe;changed=true;}
     }
+    const normalizedArea=normalizeAreaName(copy.area);
+    if(copy.area!==normalizedArea){copy.area=normalizedArea;changed=true;}
+    if(Number(copy.visits)>1&&!copy.legacyVisits){copy.legacyVisits=Number(copy.visits);changed=true;}
     delete copy.visits;
     delete copy.key;
     return copy;
@@ -150,8 +155,9 @@ function recordVisit(pl,how){
 
 function rateVisit(visitId,rating){
   const item=S.log.find(x=>x.visitId===visitId);
-  if(!item)return;
-  item.rating=Math.max(.5,Math.min(5,Math.round(Number(rating)*2)/2));
+  const n=Number(rating);
+  if(!item||!Number.isFinite(n))return;
+  item.rating=Math.max(.5,Math.min(5,Math.round(n*2)/2));
   item.ratedAt=Date.now();
   persistHistory();
   renderLog();
@@ -173,6 +179,7 @@ function clearHistory(){
   persistHistory();
   setHistoryMenuOpen(false);
   renderLog();
+  if(S.extra.has("fresh"))pool();
 }
 
 function visitDayKey(ts){
@@ -226,15 +233,17 @@ function closeHistory(){
 }
 
 function starRatingHtml(l,rating){
+  const visitId=escapeHtml(l.visitId);
+  const name=escapeHtml(l.n);
   const stars=[1,2,3,4,5].map(i=>{
     const half=i-.5;
     const fill=rating>=i?100:rating>=half?50:0;
     return '<span class="star-unit" data-fill="'+fill+'" style="--star-fill:'+fill+'%">'+
       '<span class="star-empty" aria-hidden="true">★</span><span class="star-fill" aria-hidden="true">★</span>'+
-      '<button class="star-hit star-left" type="button" data-visit="'+l.visitId+'" data-rating="'+half+'" aria-label="Rate '+l.n+' '+half+' out of 5"></button>'+
-      '<button class="star-hit star-right" type="button" data-visit="'+l.visitId+'" data-rating="'+i+'" aria-label="Rate '+l.n+' '+i+' out of 5"></button></span>';
+      '<button class="star-hit star-left" type="button" data-visit="'+visitId+'" data-rating="'+half+'" aria-label="Rate '+name+' '+half+' out of 5"></button>'+
+      '<button class="star-hit star-right" type="button" data-visit="'+visitId+'" data-rating="'+i+'" aria-label="Rate '+name+' '+i+' out of 5"></button></span>';
   }).join("");
-  return '<div class="star-rating" role="group" aria-label="Rate '+l.n+' out of 5 stars">'+stars+'</div>';
+  return '<div class="star-rating" role="group" aria-label="Rate '+name+' out of 5 stars">'+stars+'</div>';
 }
 
 function renderVisitCard(l){
@@ -244,10 +253,11 @@ function renderVisitCard(l){
   const time=visitTime(l.ts);if(time)bits.push(time);
   if(l.how)bits.push(l.how);
   if(Number(l.legacyVisits)>1)bits.push(l.legacyVisits+" earlier visits were saved together");
-  const trash='<button class="visit-delete" type="button" data-delete-visit="'+l.visitId+'" aria-label="Delete '+l.n+' from history" title="Delete visit">'+
+  const visitId=escapeHtml(l.visitId),name=escapeHtml(l.n);
+  const trash='<button class="visit-delete" type="button" data-delete-visit="'+visitId+'" aria-label="Delete '+name+' from history" title="Delete visit">'+
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/></svg></button>';
   return '<div class="visit-card">'+
-    '<div class="visit-top"><div class="visit-copy"><b>'+l.n+'</b><span class="visit-meta">'+bits.join(" · ")+'</span></div>'+
+    '<div class="visit-top"><div class="visit-copy"><b>'+name+'</b><span class="visit-meta">'+bits.map(escapeHtml).join(" · ")+'</span></div>'+
     '<div class="visit-side"><span class="visit-score '+(rating?'':'unrated')+'">'+(rating?formatRating(rating)+"/5":"Rate")+'</span>'+trash+'</div></div>'+
     starRatingHtml(l,rating)+
     '<div class="rating-caption">'+ratingWord(rating)+'</div></div>';
@@ -272,7 +282,7 @@ function renderLog(){
   });
 
   list.innerHTML=groups.map(group=>
-    '<section class="history-day"><div class="history-date">'+group.label+'</div>'+group.items.map(renderVisitCard).join("")+'</section>'
+    '<section class="history-day"><div class="history-date">'+escapeHtml(group.label)+'</div>'+group.items.map(renderVisitCard).join("")+'</section>'
   ).join("");
 
   list.querySelectorAll(".star-hit").forEach(b=>{
