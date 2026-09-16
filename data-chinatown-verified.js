@@ -76,9 +76,11 @@ if(VERIFIED_CHINATOWN_GEMS.length!==CHINATOWN_VERIFIED_GEMS.length){
   console.warn("Some Chinatown verified-gem records failed the active / 4.5 / 100-review / location-hours rule.");
 }
 
-/* Avoid duplicates if a future maintenance pass moves one of these into another file. */
+/* Avoid duplicates if a future maintenance pass moves one of these into another file.
+   This runs before core.js, so do not depend on placeArea() here. */
+const rawArea=p=>p.area==="Civic District"?"CBD":(p.area||"CBD");
 VERIFIED_CHINATOWN_GEMS.forEach(place=>{
-  const exists=MASTER_PLACES.some(p=>p.n===place.n&&p.l===place.l&&placeArea(p)===place.area);
+  const exists=MASTER_PLACES.some(p=>p.n===place.n&&p.l===place.l&&rawArea(p)===place.area);
   if(!exists){
     MASTER_PLACES.push(place);
     PLACES.push(place);
