@@ -55,7 +55,7 @@
 
   function openNarrowedPlace(pl){
     S.pool=[pl];
-    S.why="you picked it from Narrow it down";
+    S.why=null;
     openPlaceDetail(pl,"Narrow it down",0);
   }
 
@@ -162,6 +162,10 @@
   pool=function(){
     resetDecisionViews();
     basePool();
+
+    /* Places can also disappear through Manage places while the user is on Ask/Fate.
+       If that leaves zero or one choice, return to Narrow instead of leaving a dead flow. */
+    if(S.stage>0&&S.base.length<=1&&typeof go==="function")go(0);
   };
 
   window.renderFilterViews=renderFilterViews;
