@@ -60,6 +60,15 @@
   function clearFinalTimer(){
     if(finalTimer!==null){window.clearTimeout(finalTimer);finalTimer=null;}
   }
+  function stepAvailable(step){
+    if(!step||!Number.isInteger(step.stage)||step.stage===0)return true;
+    return typeof canEnterStage!=="function"||canEnterStage(step.stage);
+  }
+  function seekAvailable(from){
+    let i=from;
+    while(i<STEPS.length&&!stepAvailable(STEPS[i]))i+=1;
+    return Math.min(i,STEPS.length-1);
+  }
 
   function buildRoot(){
     root=document.createElement("div");
@@ -84,9 +93,6 @@
     root.querySelector(".tour-hitblock").addEventListener("click",()=>{
       if(STEPS[index]?.final)finish();
       else next();
-    });
-    root.querySelector(".tour-bubble").addEventListener("click",()=>{
-      if(STEPS[index]?.final)finish();
     });
     root.querySelector(".tour-skip").addEventListener("click",finish);
     root.querySelector(".tour-next").addEventListener("click",next);
@@ -158,6 +164,7 @@
   function show(){
     if(!root)return;
     clearFinalTimer();
+    index=seekAvailable(index);
     const step=STEPS[index];
     prepare(step);
     const bubble=root.querySelector(".tour-bubble");
@@ -182,15 +189,13 @@
       }));
     },80);
 
-    if(step.final){
-      finalTimer=window.setTimeout(finish,3000);
-    }
+    if(step.final)finalTimer=window.setTimeout(finish,3000);
   }
 
   function next(){
     if(!root)return;
     if(index>=STEPS.length-1){finish();return;}
-    index+=1;
+    index=seekAvailable(index+1);
     show();
   }
 
