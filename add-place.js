@@ -43,15 +43,21 @@ function openSheet(){
    '<button class="big pop" id="aSave" type="button">Add</button></div></div>';
   document.body.appendChild(scrim);
 
+  const fillDatalist=(id,values)=>{
+    const list=$(id);if(!list)return;
+    list.replaceChildren();
+    values.forEach(value=>{const o=document.createElement("option");o.value=value;list.appendChild(o);});
+  };
+
   const areas=[...new Set([...AREA_OPTIONS,...PLACES.map(placeArea)])].sort(areaSort);
-  $("areaList").innerHTML=areas.map(v=>'<option value="'+v+'">').join("");
+  fillDatalist("areaList",areas);
   $("aArea").value=S.area||areas[0]||"CBD";
-  $("cuiList").innerHTML=[...new Set(PLACES.map(x=>x.c))].sort().map(v=>'<option value="'+v+'">').join("");
+  fillDatalist("cuiList",[...new Set(PLACES.map(x=>x.c))].sort());
 
   const refreshLocList=()=>{
-    const area=normalizeAreaName($("aArea").value.trim());
-    const options=[...new Set(PLACES.filter(x=>!area||placeArea(x)===area).map(x=>x.l))];
-    $("locList").innerHTML=options.map(v=>'<option value="'+v+'">').join("");
+    const area=normalizeAreaName($("aArea").value);
+    const options=[...new Set(PLACES.filter(x=>!area||placeArea(x)===area).map(x=>x.l))].filter(Boolean).sort();
+    fillDatalist("locList",options);
   };
   refreshLocList();
   $("aArea").addEventListener("input",refreshLocList);
@@ -65,30 +71,65 @@ function openSheet(){
     $("aPrice").appendChild(b);
   });
 
-  const shut=()=>{scrim.remove();$("quickFab")?.focus();};
+  const esc=e=>{if(e.key==="Escape"&&document.body.contains(scrim))shut();};
+  const shut=()=>{
+    document.removeEventListener("keydown",esc);
+    scrim.remove();
+    $("quickFab")?.focus();
+  };
   $("aCancel").onclick=shut;
   scrim.onclick=e=>{if(e.target===scrim)shut();};
-  document.addEventListener("keydown",function esc(e){
-    if(e.key==="Escape"&&document.body.contains(scrim)){shut();document.removeEventListener("keydown",esc);}});
+  document.addEventListener("keydown",esc);
 
   $("aSave").onclick=()=>{
-    const n=$("aName").value.trim();
-    if(!n){$("aName").focus();return;}
-    const c=$("aCui").value.trim()||"Mixed";
-    const area=normalizeAreaName($("aArea").value.trim()||S.area||"CBD");
+    const nameInput=$("aName"),closeInput=$("aShut");
+    nameInput.setCustomValidity("");closeInput.setCustomValidity("");
+
+    const n=nameInput.value.trim().replace(/\s+/g," ");
+    if(!n){nameInput.focus();return;}
+    const c=$("aCui").value.trim().replace(/\s+/g," ")||"Mixed";
+    const area=normalizeAreaName($("aArea").value||S.area||"CBD");
+    const loc=$("aLoc").value.trim().replace(/\s+/g," ")||"Unsorted";
+    const unit=$("aUnit").value.trim();
+
+    const duplicate=PLACES.some(p=>
+      String(p.n||"").trim().toLowerCase()===n.toLowerCase()&&
+      String(p.l||"").trim().toLowerCase()===loc.toLowerCase()&&
+      placeArea(p).toLowerCase()===area.toLowerCase());
+    if(duplicate){
+      nameInput.setCustomValidity("This place is already in Eat What?! for this building and area.");
+      nameInput.reportValidity();
+      return;
+    }
+
     const hm=v=>{const[a,b]=v.split(":").map(Number);return a+b/60;};
     const o=$("aOpen").value,sh=$("aShut").value;
-    const added={n,c,p:price,l:$("aLoc").value.trim()||"Unsorted",area,
-      col:guessColour(c),note:$("aNote").value.trim(),w:$("aUnit").value.trim(),address:$("aAddress").value.trim()||null,
-      h:(o&&sh)?{mf:[hm(o),hm(sh)]}:undefined,src:"user",user:true};
+    if(o&&sh&&hm(sh)<=hm(o)){
+      closeInput.setCustomValidity("Closing time must be later than opening time for this lunch list.");
+      closeInput.reportValidity();
+      return;
+    }
+
+    const added={
+      id:"user-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,7),
+      n,c,p:price,l:loc,area,
+      col:guessColour(c),note:$("aNote").value.trim(),w:unit,address:$("aAddress").value.trim()||null,
+      h:(o&&sh)?{mf:[hm(o),hm(sh)]}:undefined,src:"user",user:true
+    };
     PERSONAL_PLACES.push(added);
     PLACES.push(added);
     savePersonalPlaces();
     S.area=area;S.loc.clear();
     buildFilters();pool();shut();
+
     const t=$("today0");
-    if(t)t.insertAdjacentHTML("afterend",'<div class="reveal" id="aDone">'+n+' is in.</div>');
-    setTimeout(()=>$("aDone")&&$("aDone").remove(),3000);
+    if(t){
+      $("aDone")?.remove();
+      const done=document.createElement("div");
+      done.className="reveal";done.id="aDone";done.textContent=n+" is in.";
+      t.insertAdjacentElement("afterend",done);
+      setTimeout(()=>done.remove(),3000);
+    }
   };
   $("aName").focus();
 }
@@ -168,6 +209,7 @@ if(quickFab&&quickActions){
   quickFab.addEventListener("pointercancel",()=>{
     quickPointerActive=false;
     quickDragTarget=null;
+    setQuickOpen(quickWasOpen);
   });
 
   /* Keyboard / assistive-tech activation. Pointer taps are handled above. */
@@ -178,19 +220,19 @@ if(quickFab&&quickActions){
   };
 
   document.addEventListener("pointerdown",e=>{
-    if(quickOpen&&!quickActions.contains(e.target)&&e.target!==quickFab)setQuickOpen(false);
+    if(quickOpen&&!quickActions.contains(e.target)&&!quickFab.contains(e.target))setQuickOpen(false);
   });
 }
 
 function pool(){
-  const recent=S.log.slice(0,3).map(l=>l.n);
+  const recent=new Set(S.log.slice(0,3).map(visitHistoryKey));
   S.base=PLACES.filter(p=>
     (!S.area||placeArea(p)===S.area)&&
     (!S.loc.size||S.loc.has(p.l))&&(!S.price.size||S.price.has(p.p))&&
     (!S.cui.size||S.cui.has(p.c))&&
     (!S.extra.has("now")||state(p,new Date())==="open")&&
     (!S.extra.has("halal")||p.halal)&&
-    (!S.extra.has("fresh")||!recent.includes(p.n)));
+    (!S.extra.has("fresh")||!recent.has(placeHistoryKey(p))));
   S.pool=[...S.base];paint();
 }
 function paint(){drawToday(new Date());
