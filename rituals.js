@@ -195,7 +195,10 @@ function say(p,msg){
     const only=S.pool[0];
     b.disabled=false;
     b.textContent="View "+only.n;
-    b.onclick=()=>win(only,"Ask the room",1);
+    b.onclick=()=>{
+      if(typeof window.openPlaceDetail==="function")window.openPlaceDetail(only,"Ask the room",1);
+      else win(only,"Ask the room");
+    };
   }else if(S.pool.length>1){
     b.disabled=false;
     b.textContent="Play for these "+S.pool.length;
