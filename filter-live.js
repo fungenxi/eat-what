@@ -35,6 +35,13 @@
     return [where,pl.c,$$(pl.p)].filter(Boolean).join(" · ");
   }
 
+  function openNarrowedPlace(pl){
+    if(typeof win!=="function")return;
+    S.pool=[pl];
+    S.why="you picked it from Narrow it down";
+    win(pl,"Narrow it down",0);
+  }
+
   function renderNarrowPreview(){
     const mount=$("filterPreview0");
     if(!mount)return;
@@ -47,7 +54,11 @@
     const count=S.base.length;
     title.textContent=count+" "+(count===1?"option":"options")+" left";
     const sub=document.createElement("span");
-    sub.textContent="Updates live as you filter";
+    sub.textContent=count===1
+      ?"Only one left — tap it to view"
+      :count>1
+        ?"Tap any place to view it, or keep narrowing"
+        :"Updates live as you filter";
     copy.append(title,sub);
     head.appendChild(copy);
     mount.appendChild(head);
@@ -69,13 +80,16 @@
     [...S.base]
       .sort((a,b)=>(a.l||"").localeCompare(b.l||"")||a.n.localeCompare(b.n))
       .forEach(pl=>{
-        const row=document.createElement("div");
+        const row=document.createElement("button");
+        row.type="button";
         row.className="filter-option";
+        row.setAttribute("aria-label","View "+pl.n);
         const name=document.createElement("b");
         name.textContent=pl.n;
         const meta=document.createElement("span");
         meta.textContent=optionMeta(pl);
         row.append(name,meta);
+        row.onclick=()=>openNarrowedPlace(pl);
         list.appendChild(row);
       });
     mount.appendChild(list);
@@ -116,8 +130,11 @@
     renderNarrowPreview();
     renderStageContext("filterContext1");
     renderStageContext("filterContext2");
+
     const next=$("s0")?.querySelector('[data-next="1"]');
-    if(next)next.disabled=S.base.length===0;
+    if(next)next.disabled=S.base.length<=1;
+
+    if(typeof window.syncDecisionNav==="function")window.syncDecisionNav();
   }
 
   paint=function(){
