@@ -43,37 +43,40 @@ function renderManagePlaces(){
 
   const areaOptions=manageAreas();
   if(!areaOptions.includes(manageArea))manageArea="All";
-  areas.innerHTML=areaOptions.map(area=>
-    '<button class="chip" type="button" data-manage-area="'+area+'" aria-pressed="'+String(manageArea===area)+'">'+area+'</button>'
-  ).join("");
-  areas.querySelectorAll("[data-manage-area]").forEach(b=>{
-    b.onclick=()=>{manageArea=b.dataset.manageArea;renderManagePlaces();};
+  areas.replaceChildren();
+  areaOptions.forEach(area=>{
+    const b=document.createElement("button");
+    b.className="chip";b.type="button";b.textContent=area;
+    b.dataset.manageArea=area;
+    b.setAttribute("aria-pressed",String(manageArea===area));
+    b.onclick=()=>{manageArea=area;renderManagePlaces();};
+    areas.appendChild(b);
   });
 
   const q=manageQuery.trim().toLowerCase();
   const rows=PLACES.filter(p=>(manageArea==="All"||placeArea(p)===manageArea)&&(!q||[
     p.n,p.c,p.l,p.w,p.address,placeArea(p)
-  ].filter(Boolean).join(" ").toLowerCase().includes(q))).sort((a,b)=>placeArea(a).localeCompare(placeArea(b))||a.l.localeCompare(b.l)||a.n.localeCompare(b.n));
+  ].filter(Boolean).join(" ").toLowerCase().includes(q))).sort((a,b)=>
+    placeArea(a).localeCompare(placeArea(b))||String(a.l||"").localeCompare(String(b.l||""))||String(a.n||"").localeCompare(String(b.n||"")));
 
+  list.replaceChildren();
   if(!rows.length){
-    list.innerHTML='<div class="manage-empty">No places match this search.</div>';
-    return;
+    const empty=document.createElement("div");empty.className="manage-empty";empty.textContent="No places match this search.";
+    list.appendChild(empty);return;
   }
 
-  list.innerHTML=rows.map(p=>{
-    const today=hoursLine(p,new Date());
-    return '<div class="manage-row" data-manage-key="'+placeDeleteKey(p)+'">'+
-      '<div class="manage-copy"><b>'+p.n+'</b><span>'+manageLocationLine(p)+'</span>'+
-      '<small>'+(today||"Opening hours not confirmed")+'</small></div>'+
-      '<button class="manage-delete" type="button" aria-label="Delete '+p.n+'">Delete</button></div>';
-  }).join("");
+  rows.forEach(p=>{
+    const row=document.createElement("div");row.className="manage-row";row.dataset.manageKey=placeDeleteKey(p);
+    const copy=document.createElement("div");copy.className="manage-copy";
+    const name=document.createElement("b");name.textContent=p.n;
+    const location=document.createElement("span");location.textContent=manageLocationLine(p);
+    const hours=document.createElement("small");hours.textContent=hoursLine(p,new Date())||"Opening hours not confirmed";
+    copy.append(name,location,hours);
 
-  list.querySelectorAll(".manage-delete").forEach(btn=>{
-    btn.onclick=()=>{
-      const row=btn.closest("[data-manage-key]");
-      const p=PLACES.find(x=>placeDeleteKey(x)===row?.dataset.manageKey);
-      if(p)deletePlaceFromApp(p);
-    };
+    const del=document.createElement("button");del.className="manage-delete";del.type="button";del.textContent="Delete";
+    del.setAttribute("aria-label","Delete "+p.n);
+    del.onclick=()=>deletePlaceFromApp(p);
+    row.append(copy,del);list.appendChild(row);
   });
 }
 
@@ -96,7 +99,9 @@ function deletePlaceFromApp(p){
 
   const runtimeIndex=PLACES.indexOf(p);
   if(runtimeIndex>=0)PLACES.splice(runtimeIndex,1);
-  S.loc.delete(p.l);S.cui.delete(p.c);
+
+  /* Keep the user's filters intact if other places still satisfy them.
+     buildFilters() already prunes location/cuisine selections only when they truly disappear. */
   buildFilters();pool();renderManagePlaces();
 }
 
