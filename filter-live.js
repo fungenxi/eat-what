@@ -5,6 +5,7 @@
   const RULE_LABELS={now:"Open now",halal:"Halal",fresh:"Not been lately"};
 
   function resetDecisionViews(){
+    if(typeof window.cancelActiveGame==="function")window.cancelActiveGame();
     S.why=null;
     S.mech=null;
     ["rRun","mRun"].forEach(id=>{
@@ -37,6 +38,7 @@
 
   function openPlaceDetail(pl,how,backStage){
     if(!pl||typeof win!=="function")return;
+    if(typeof window.cancelActiveGame==="function")window.cancelActiveGame();
     ["s0","s1","s2"].forEach(id=>$(id)?.classList.add("hide"));
     win(pl,how);
 
