@@ -13,6 +13,7 @@ function buildRituals(){
     const b=document.createElement("button");
     b.className="pick";b.type="button";b.setAttribute("aria-pressed","false");
     b.innerHTML=ICON[r.k]+"<span>"+r.t+"<u>"+r.s+"</u></span>";
+    b.disabled=S.base.length<=1;
     b.onclick=()=>{
       if(S.base.length<=1)return;
       [...w.children].forEach(c=>c.setAttribute("aria-pressed","false"));
@@ -23,13 +24,14 @@ function buildRituals(){
 }
 
 function runRitual(k){
-  if(S.base.length<=1){
+  const fn=({colour:rColour,point:rPoint,fingers:rFingers,veto:rVeto,yday:rYday})[k];
+  if(S.base.length<=1||typeof fn!=="function"){
     if(typeof go==="function")go(0);
     return;
   }
   const r=$("rRun");r.classList.remove("hide");r.innerHTML="";
   const p=document.createElement("div");p.className="panel";r.appendChild(p);
-  ({colour:rColour,point:rPoint,fingers:rFingers,veto:rVeto,yday:rYday})[k](p);
+  fn(p);
   r.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
 
@@ -85,12 +87,12 @@ function rPoint(p){
   p.innerHTML='<div class="lbl big">Point on three. Where did most hands land?</div>';
   const g=document.createElement("div");g.className="dirs";
   const candidates=[...S.pool];
-  const buildings=[...new Set(candidates.map(x=>x.l))];
+  const buildings=[...new Set(candidates.map(x=>x.l).filter(Boolean))];
   buildings.forEach(l=>{
     const count=candidates.filter(x=>x.l===l).length;
     const b=document.createElement("button");b.type="button";
     const icon=Object.prototype.hasOwnProperty.call(DIRS,l)?ARROW(DIRS[l]):ICON.point;
-    b.innerHTML=icon+"<span>"+l+"<small>"+count+" "+(count===1?"place":"places")+"</small></span>";
+    b.innerHTML=icon+"<span>"+escapeHtml(l)+"<small>"+count+" "+(count===1?"place":"places")+"</small></span>";
     b.onclick=()=>{
       const matched=candidates.filter(x=>x.l===l);
       S.pool=matched;S.why="the room pointed at "+l;
@@ -124,8 +126,12 @@ function rFingers(p){
   done.className="big";done.type="button";done.disabled=true;done.textContent="That's everyone";
   done.onclick=()=>{
     const tier=tierFor(tot),m=S.pool.filter(x=>x.p===tier);let msg;
-    if(m.length>=2){S.pool=m;msg="Total of "+tot+" lands on "+$$(tier)+". "+m.length+" left.";}
-    else msg="Total of "+tot+" lands on "+$$(tier)+", but too few matched. Everyone stays in.";
+    if(m.length){
+      S.pool=m;
+      msg="Total of "+tot+" lands on "+$$(tier)+". "+m.length+" "+(m.length===1?"place":"places")+" left.";
+    }else{
+      msg="Total of "+tot+" lands on "+$$(tier)+", but nothing matched. Everyone stays in.";
+    }
     S.why="the room threw "+tot+" for "+$$(tier);
     pad.querySelectorAll("button").forEach(x=>x.disabled=true);done.disabled=true;
     paint();say(p,msg);
@@ -139,17 +145,19 @@ function rVeto(p){
   S.pool.forEach(pl=>{
     const b=document.createElement("button");b.className="chip";b.type="button";b.textContent=pl.n;
     b.setAttribute("data-struck","false");
-    b.onclick=()=>{const on=dead.has(pl.n);on?dead.delete(pl.n):dead.add(pl.n);
+    b.onclick=()=>{
+      const on=dead.has(pl);on?dead.delete(pl):dead.add(pl);
       b.setAttribute("data-struck",String(!on));
       const left=S.pool.length-dead.size;
-      done.textContent=dead.size?"Done — "+left+" survive":"Done";done.disabled=left<1;};
+      done.textContent=dead.size?"Done — "+left+" survive":"Done";done.disabled=left<1;
+    };
     g.appendChild(b);
   });
   p.appendChild(g);
   const done=document.createElement("button");
   done.className="big";done.type="button";done.textContent="Done";
   done.onclick=()=>{
-    S.pool=S.pool.filter(x=>!dead.has(x.n));
+    S.pool=S.pool.filter(x=>!dead.has(x));
     S.why=dead.size+(dead.size===1?" veto":" vetoes")+" used";
     g.querySelectorAll("button").forEach(x=>x.disabled=true);done.disabled=true;
     paint();say(p,dead.size?dead.size+" struck off. "+S.pool.length+" survive.":"Nobody objected. All "+S.pool.length+" stay in.");
@@ -163,10 +171,12 @@ function rYday(p){
   [...new Set(S.pool.map(x=>x.c))].sort().forEach(c=>{
     const b=document.createElement("button");b.className="chip";b.type="button";b.textContent=c;
     b.setAttribute("aria-pressed","false");
-    b.onclick=()=>{const on=dead.has(c);on?dead.delete(c):dead.add(c);
+    b.onclick=()=>{
+      const on=dead.has(c);on?dead.delete(c):dead.add(c);
       b.setAttribute("aria-pressed",String(!on));
       const left=S.pool.filter(x=>!dead.has(x.c)).length;
-      done.disabled=left<1;done.textContent=dead.size?"Done — "+left+" survive":"Done";};
+      done.disabled=left<1;done.textContent=dead.size?"Done — "+left+" survive":"Done";
+    };
     g.appendChild(b);
   });
   p.appendChild(g);
