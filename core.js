@@ -36,17 +36,26 @@ const DIRS={"Funan":0,"Capitol":45,"Adelphi":90,"Raffles City":135,
 const HEADS=[["Narrow","it down"],["Ask","the room"],["Let fate","decide"]];
 const BG=["var(--teal)","var(--plum)","var(--coral)"];
 const AREA_OPTIONS=["CBD","Chinatown"];
-const normalizeAreaName=a=>a==="Civic District"?"CBD":(a||"CBD");
+function normalizeAreaName(value){
+  const clean=String(value??"").trim().replace(/\s+/g," ");
+  if(!clean)return "CBD";
+  if(clean.toLowerCase()==="civic district")return "CBD";
+  const known=AREA_OPTIONS.find(a=>a.toLowerCase()===clean.toLowerCase());
+  return known||clean;
+}
 const placeArea=p=>normalizeAreaName(p.area);
 const defaultArea=PLACES.some(p=>placeArea(p)==="CBD")?"CBD":(PLACES[0]?placeArea(PLACES[0]):"CBD");
 
-const S={stage:1,area:defaultArea,price:new Set(),loc:new Set(),cui:new Set(),extra:new Set(),
+const S={stage:0,area:defaultArea,price:new Set(),loc:new Set(),cui:new Set(),extra:new Set(),
   pool:[...PLACES],base:[...PLACES],why:null,mech:null,
   log:readLocal(STORAGE.log,[]).filter(x=>x&&typeof x.n==="string"&&typeof x.how==="string")};
 
 const $=i=>document.getElementById(i);
 const shuf=a=>{const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;};
 const $$=n=>"$".repeat(n);
+const escapeHtml=value=>String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[ch]);
+const placeHistoryKey=p=>p?.id||[p?.n||"",p?.l||"",placeArea(p||{})].map(x=>String(x).trim().toLowerCase()).join("|");
+const visitHistoryKey=l=>l?.id||[l?.n||"",l?.l||"",normalizeAreaName(l?.area)].map(x=>String(x).trim().toLowerCase()).join("|");
 const today=new Date().getDay();
 
 /* ---------- what time is it, and what does that rule out ---------- */
@@ -110,9 +119,9 @@ function drawToday(d){
         early=scope.filter(p=>p.early),
         t=clockOf(d);
   let bits="";
-  if(soon.length)bits+='<li><em>Closing soon</em><span>'+soon.map(p=>p.n+' closes at '+fmtT(closingAt(p,d))).join('; ')+'</span></li>';
-  specials.forEach(p=>bits+='<li><em>Today only</em><span>'+p.sp.t+' at '+p.n+'</span></li>');
-  if(t>=12.5&&early.length)bits+='<li><em>Best earlier</em><span>'+early.map(p=>p.n+' is best before '+fmtT(earlyBestTime(p))).join('; ')+'</span></li>';
+  if(soon.length)bits+='<li><em>Closing soon</em><span>'+soon.map(p=>escapeHtml(p.n)+' closes at '+fmtT(closingAt(p,d))).join('; ')+'</span></li>';
+  specials.forEach(p=>bits+='<li><em>Today only</em><span>'+escapeHtml(p.sp.t)+' at '+escapeHtml(p.n)+'</span></li>');
+  if(t>=12.5&&early.length)bits+='<li><em>Best earlier</em><span>'+early.map(p=>escapeHtml(p.n)+' is best before '+fmtT(earlyBestTime(p))).join('; ')+'</span></li>';
 
   const status=S.extra.has("now")?'<b>Showing only places open now.</b> ':'';
   const html=(status||bits)?'<div class="today">'+status+(bits?'<ul>'+bits+'</ul>':'')+'</div>':'';
