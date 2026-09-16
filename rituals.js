@@ -13,13 +13,20 @@ function buildRituals(){
     const b=document.createElement("button");
     b.className="pick";b.type="button";b.setAttribute("aria-pressed","false");
     b.innerHTML=ICON[r.k]+"<span>"+r.t+"<u>"+r.s+"</u></span>";
-    b.onclick=()=>{[...w.children].forEach(c=>c.setAttribute("aria-pressed","false"));
-      b.setAttribute("aria-pressed","true");S.pool=[...S.base];paint();runRitual(r.k);};
+    b.onclick=()=>{
+      if(S.base.length<=1)return;
+      [...w.children].forEach(c=>c.setAttribute("aria-pressed","false"));
+      b.setAttribute("aria-pressed","true");S.pool=[...S.base];paint();runRitual(r.k);
+    };
     w.appendChild(b);
   });
 }
 
 function runRitual(k){
+  if(S.base.length<=1){
+    if(typeof go==="function")go(0);
+    return;
+  }
   const r=$("rRun");r.classList.remove("hide");r.innerHTML="";
   const p=document.createElement("div");p.className="panel";r.appendChild(p);
   ({colour:rColour,point:rPoint,fingers:rFingers,veto:rVeto,yday:rYday})[k](p);
@@ -178,9 +185,27 @@ function say(p,msg){
   let o=p.querySelector(".reveal");
   if(!o){o=document.createElement("div");o.className="reveal";p.appendChild(o);}
   o.textContent=msg;
+
   let b=p.querySelector(".big.pop");
-  if(!b){b=document.createElement("button");b.className="big pop";b.type="button";
-    b.onclick=()=>go(2);p.appendChild(b);}
-  b.textContent="Play for these "+S.pool.length;
+  if(!b){
+    b=document.createElement("button");b.className="big pop";b.type="button";p.appendChild(b);
+  }
+
+  if(S.pool.length===1){
+    const only=S.pool[0];
+    b.disabled=false;
+    b.textContent="View "+only.n;
+    b.onclick=()=>win(only,"Ask the room",1);
+  }else if(S.pool.length>1){
+    b.disabled=false;
+    b.textContent="Play for these "+S.pool.length;
+    b.onclick=()=>go(2);
+  }else{
+    b.disabled=true;
+    b.textContent="No options left";
+    b.onclick=null;
+  }
+
+  if(typeof window.syncDecisionNav==="function")window.syncDecisionNav();
   b.scrollIntoView({behavior:"smooth",block:"center"});
 }
