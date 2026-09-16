@@ -1,8 +1,8 @@
 /* Wheel interaction: the wheel itself is the spin control. */
-gWheel=function(p){
+gWheel=function(p,token){
   const it=[...S.pool],n=it.length;
-  if(!n){
-    p.innerHTML='<div class="lbl big">No places to spin yet</div>';
+  if(n<=1){
+    p.innerHTML='<div class="lbl big">Not enough places to spin</div>';
     return;
   }
   const seg=360/n,R=155,C=165,NS="http://www.w3.org/2000/svg";
@@ -47,16 +47,17 @@ gWheel=function(p){
   svg.appendChild(hubLabel);
   box.appendChild(svg);p.appendChild(box);
 
-  let spinning=false;
+  let spinning=false,timer=null;
+  if(typeof setGameCleanup==="function")setGameCleanup(token,()=>{if(timer!==null)clearTimeout(timer);});
   const spin=()=>{
-    if(spinning)return;
+    if(spinning||!gameRunActive(token,p))return;
     spinning=true;
     box.classList.add("is-spinning");
     box.setAttribute("aria-disabled","true");
-    box.removeAttribute("tabindex");
+    box.tabIndex=-1;
     const w=Math.floor(Math.random()*n);
     svg.style.transform="rotate("+(360*6-(w*seg+seg/2))+"deg)";
-    setTimeout(()=>win(it[w],"the wheel"),4600);
+    timer=setTimeout(()=>{if(gameRunActive(token,p))win(it[w],"the wheel");},4600);
   };
   box.addEventListener("click",spin);
   box.addEventListener("keydown",e=>{
