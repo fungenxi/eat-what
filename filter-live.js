@@ -35,11 +35,28 @@
     return [where,pl.c,$$(pl.p)].filter(Boolean).join(" · ");
   }
 
+  function openPlaceDetail(pl,how,backStage){
+    if(!pl||typeof win!=="function")return;
+    ["s0","s1","s2"].forEach(id=>$(id)?.classList.add("hide"));
+    win(pl,how);
+
+    /* win() normally treats Again as replaying a Fate game. Directly-opened
+       places should instead return to the stage they came from. */
+    const again=$("again");
+    if(again){
+      again.onclick=()=>{
+        if(typeof restore==="function")restore();
+        $("sv")?.classList.add("hide");
+        go(backStage);
+      };
+    }
+  }
+  window.openPlaceDetail=openPlaceDetail;
+
   function openNarrowedPlace(pl){
-    if(typeof win!=="function")return;
     S.pool=[pl];
     S.why="you picked it from Narrow it down";
-    win(pl,"Narrow it down",0);
+    openPlaceDetail(pl,"Narrow it down",0);
   }
 
   function renderNarrowPreview(){
