@@ -19,7 +19,7 @@ const CHINATOWN_VERIFIED_GEMS=[
     hoursSourceLabel:"SETHLUI visit, updated Jul 2026",
     hoursUrl:"https://sethlui.com/pangs-satay-singapore/",
     googleRating:4.6,googleReviews:116,ratingChecked:"2026-09-17",ratingSourceLabel:"Google reviews cited by SETHLUI",
-    hiddenGem:true,new:true,status:"active"
+    hiddenGem:true,new:true,status:"active",statusChecked:"2026-09-17"
   },
   {
     n:"The Food Peeps Coffee & Deli",c:"Cafe",p:2,l:"Sago Street",area:"Chinatown",col:"green",
@@ -32,7 +32,7 @@ const CHINATOWN_VERIFIED_GEMS=[
     hoursSourceLabel:"Current Chinatown Singapore listing and official cafe site",
     hoursUrl:"https://www.thefoodpeeps.com/",
     googleRating:4.6,googleReviews:277,ratingChecked:"2026-09-17",ratingSourceLabel:"Google reviews",
-    hiddenGem:true,new:true,status:"active"
+    hiddenGem:true,new:true,status:"active",statusChecked:"2026-09-17"
   },
   {
     n:"Nanbantei Japanese Restaurant",c:"Yakitori",p:2,l:"Chinatown Point",area:"Chinatown",col:"brown",
@@ -45,7 +45,7 @@ const CHINATOWN_VERIFIED_GEMS=[
     hoursSourceLabel:"Official Nanbantei site and current Google business listing",
     hoursUrl:"https://nanbantei.com.sg/home-official/",
     googleRating:4.6,googleReviews:1060,ratingChecked:"2026-09-17",ratingSourceLabel:"Google reviews",
-    hiddenGem:true,new:true,status:"active"
+    hiddenGem:true,new:true,status:"active",statusChecked:"2026-09-17"
   },
   {
     n:"En Yeoh's Bak Kut Teh",c:"Bak Kut Teh",p:2,l:"Chinatown Point",area:"Chinatown",col:"brown",
@@ -58,7 +58,7 @@ const CHINATOWN_VERIFIED_GEMS=[
     hoursSourceLabel:"Current business listing and 2026 Chinatown food coverage",
     hoursUrl:"https://enyeohsbkt.com.sg/",
     googleRating:4.6,googleReviews:1201,ratingChecked:"2026-09-17",ratingSourceLabel:"Google reviews",
-    hiddenGem:true,new:true,status:"active"
+    hiddenGem:true,new:true,status:"active",statusChecked:"2026-09-17"
   }
 ];
 
