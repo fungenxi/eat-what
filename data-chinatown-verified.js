@@ -59,6 +59,45 @@ const CHINATOWN_VERIFIED_GEMS=[
     hoursUrl:"https://enyeohsbkt.com.sg/",
     googleRating:4.6,googleReviews:1201,ratingChecked:"2026-09-17",ratingSourceLabel:"Google reviews",
     hiddenGem:true,new:true,status:"active",statusChecked:"2026-09-17"
+  },
+  {
+    n:"Kra Pow Thai Restaurant",c:"Thai",p:2,l:"Chinatown Point",area:"Chinatown",col:"green",
+    note:"No-frills Thai specialist on level 2; especially strong for wok-hei-heavy drunkard noodles, pad krapow and tom yum rather than generic mall Thai",
+    w:"02-39",
+    h:{mf:[[11.5,15],[17,21.5]],sat:[[11.5,15],[17,21.5]],sun:[[11.5,15],[17,21.5]]},
+    src:"stall",
+    address:"133 New Bridge Road, #02-39 Chinatown Point, Singapore 059413",
+    hoursChecked:"2026-09-17",
+    hoursSourceLabel:"Current Chinatown Point directory and Chinatown Singapore listing",
+    hoursUrl:"https://chinatownsg.com/shop/kra-pow-thai-restaurant-chinatown-point",
+    googleRating:4.6,googleReviews:828,ratingChecked:"2026-09-17",ratingSourceLabel:"Google reviews",
+    hiddenGem:true,new:true,status:"active",statusChecked:"2026-09-17"
+  },
+  {
+    n:"Kohaku Sabo",c:"Japanese",p:2,l:"Chinatown Point",area:"Chinatown",col:"white",
+    note:"Quiet Japanese teahouse-style spot for tendon, udon and playful desserts; easy to miss beside the louder mall restaurants",
+    w:"02-34",
+    h:{mf:[[11.5,15],[17,22]],sat:[[11.5,15],[17,22]],sun:[[11.5,15],[17,22]]},
+    src:"stall",
+    address:"133 New Bridge Road, #02-34 Chinatown Point, Singapore 059413",
+    hoursChecked:"2026-09-17",
+    hoursSourceLabel:"Current Chinatown Point directory and current restaurant listings",
+    hoursUrl:"https://chinatownpoint.com.sg/stores-cn/",
+    googleRating:4.6,googleReviews:815,ratingChecked:"2026-09-17",ratingSourceLabel:"Google reviews",
+    hiddenGem:true,new:true,status:"active",statusChecked:"2026-09-17"
+  },
+  {
+    n:"Danji Korean BBQ Buffet",c:"Korean BBQ",p:2,l:"Chinatown Point",area:"Chinatown",col:"red",
+    note:"Family-run Korean BBQ buffet with strong value at weekday lunch; more low-key and specialist than the usual mall Korean chains",
+    w:"02-35",
+    h:{mf:[[11,14.5],[17.5,22]],sat:[11.5,22],sun:[11.5,22]},
+    src:"stall",
+    address:"133 New Bridge Road, #02-35 Chinatown Point, Singapore 059413",
+    hoursChecked:"2026-09-17",
+    hoursSourceLabel:"Current Chinatown Point F&B list and Chinatown Singapore listing",
+    hoursUrl:"https://chinatownsg.com/shop/danji-korean-bbq-buffet-chinatown-point",
+    googleRating:4.6,googleReviews:364,ratingChecked:"2026-09-17",ratingSourceLabel:"Google reviews",
+    hiddenGem:true,new:true,status:"active",statusChecked:"2026-09-17"
   }
 ];
 
