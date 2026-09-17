@@ -56,7 +56,19 @@ const $$=n=>"$".repeat(n);
 const escapeHtml=value=>String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[ch]);
 const placeHistoryKey=p=>p?.id||[p?.n||"",p?.l||"",placeArea(p||{})].map(x=>String(x).trim().toLowerCase()).join("|");
 const visitHistoryKey=l=>l?.id||[l?.n||"",l?.l||"",normalizeAreaName(l?.area)].map(x=>String(x).trim().toLowerCase()).join("|");
-const today=new Date().getDay();
+
+/* The restaurant database is Singapore-only. Always evaluate opening hours in
+   Asia/Singapore rather than the device timezone, so travelling users still get
+   correct availability. The returned Date intentionally carries Singapore's
+   wall-clock components for the existing hours engine below. */
+function singaporeNow(){
+  const parts=new Intl.DateTimeFormat("en-GB",{
+    timeZone:"Asia/Singapore",year:"numeric",month:"2-digit",day:"2-digit",
+    hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"
+  }).formatToParts(new Date());
+  const get=type=>Number(parts.find(p=>p.type===type)?.value||0);
+  return new Date(get("year"),get("month")-1,get("day"),get("hour"),get("minute"),get("second"));
+}
 
 /* ---------- what time is it, and what does that rule out ---------- */
 const DAYS=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
@@ -108,22 +120,35 @@ function hoursLine(pl,d){
 const specialToday=(pl,d)=>pl.sp&&pl.sp.d.includes(d.getDay())?pl.sp.t:null;
 const earlyBestTime=pl=>Number.isFinite(pl.earlyBefore)?pl.earlyBefore:12;
 
+/* Recompute only when a restaurant actually crosses an opening/closing boundary.
+   That keeps the app live without interrupting Ask/Fate every 30 seconds. */
+let lastAvailabilityKey=null;
+function availabilityKey(d){
+  return PLACES.map(p=>placeHistoryKey(p)+":"+state(p,d)).join("|");
+}
 function tickClock(){
-  drawToday(new Date());
+  const d=singaporeNow();
+  drawToday(d);
+  const key=availabilityKey(d);
+  if(lastAvailabilityKey===null){lastAvailabilityKey=key;return;}
+  if(key!==lastAvailabilityKey){
+    lastAvailabilityKey=key;
+    if(typeof buildFilters==="function")buildFilters();
+    if(typeof pool==="function")pool();
+  }
 }
 
 function drawToday(d){
   const scope=PLACES.filter(p=>!S.area||placeArea(p)===S.area),
         soon=scope.filter(p=>{const m=closingIn(p,d);return state(p,d)==="open"&&m!==null&&m<=45;}),
-        specials=scope.filter(p=>specialToday(p,d)),
-        early=scope.filter(p=>p.early),
+        specials=scope.filter(p=>state(p,d)==="open"&&specialToday(p,d)),
+        early=scope.filter(p=>state(p,d)==="open"&&p.early),
         t=clockOf(d);
   let bits="";
   if(soon.length)bits+='<li><em>Closing soon</em><span>'+soon.map(p=>escapeHtml(p.n)+' closes at '+fmtT(closingAt(p,d))).join('; ')+'</span></li>';
   specials.forEach(p=>bits+='<li><em>Today only</em><span>'+escapeHtml(p.sp.t)+' at '+escapeHtml(p.n)+'</span></li>');
   if(t>=12.5&&early.length)bits+='<li><em>Best earlier</em><span>'+early.map(p=>escapeHtml(p.n)+' is best before '+fmtT(earlyBestTime(p))).join('; ')+'</span></li>';
 
-  const status=S.extra.has("now")?'<b>Showing only places open now.</b> ':'';
-  const html=(status||bits)?'<div class="today">'+status+(bits?'<ul>'+bits+'</ul>':'')+'</div>':'';
+  const html=bits?'<div class="today"><ul>'+bits+'</ul></div>':'';
   ["today0","today1"].forEach(id=>{const el=$(id);if(el)el.innerHTML=html;});
 }
