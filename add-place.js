@@ -226,14 +226,22 @@ if(quickFab&&quickActions){
 
 function pool(){
   const recent=new Set(S.log.slice(0,3).map(visitHistoryKey));
-  S.base=PLACES.filter(p=>
+  const now=singaporeNow();
+
+  /* User filters first, availability second. Keeping the pre-hours count lets the
+     empty state explain whether filters are too narrow or everything matching is closed. */
+  const matched=PLACES.filter(p=>
     (!S.area||placeArea(p)===S.area)&&
     (!S.loc.size||S.loc.has(p.l))&&(!S.price.size||S.price.has(p.p))&&
     (!S.cui.size||S.cui.has(p.c))&&
-    (!S.extra.has("now")||state(p,new Date())==="open")&&
     (!S.extra.has("halal")||p.halal)&&
     (!S.extra.has("fresh")||!recent.has(placeHistoryKey(p))));
+
+  S.availableBeforeHours=matched.length;
+  S.unknownHours=matched.filter(p=>state(p,now)==="unknown").length;
+  S.closedByTime=matched.filter(p=>state(p,now)==="closed").length;
+  S.base=matched.filter(p=>state(p,now)==="open");
   S.pool=[...S.base];paint();
 }
-function paint(){drawToday(new Date());
+function paint(){drawToday(singaporeNow());
   const c=$("listSize");if(c)c.textContent=PLACES.length+" places on the list";}
