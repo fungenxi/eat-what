@@ -128,6 +128,48 @@ const CHINATOWN_VERIFIED_GEMS=[
     hiddenGem:true,new:true,status:"active",statusChecked:"2026-09-17"
   },
   {
+    n:"The Noodle Memories",altName:"古月面",c:"Malaysian Noodles",p:1,l:"Hong Lim Market & Food Centre",area:"Chinatown",col:"brown",
+    note:"KL-style dry chilli pan mee from two Malaysian hawkers using a 30-year family recipe; handmade springy noodles come with minced meat, black fungus, crisp beancurd skin and an onsen egg",
+    w:"02-27",
+    h:{mon:[7,16],tue:[7,16],wed:[7,16],thu:[7,16],fri:[7,16],sat:[7,16],sun:null},
+    src:"stall",
+    address:"531A Upper Cross Street, #02-27 Hong Lim Market & Food Centre, Singapore 051531",
+    mapsQuery:"The Noodle Memories Hong Lim Market Food Centre Singapore",
+    hoursChecked:"2026-09-17",
+    hoursSourceLabel:"SETHLUI Aug 2026; unit cross-checked with Jul 2026 Ordinary Patrons and current WhyQ",
+    hoursUrl:"https://sethlui.com/the-noodle-memories-singapore/",
+    googleRating:4.6,googleReviews:236,ratingChecked:"2026-09-17",ratingSourceLabel:"Current Google business listing",
+    hiddenGem:true,new:true,status:"active",statusChecked:"2026-09-17"
+  },
+  {
+    n:"Cantonese Delights",altName:"廣東小吃",c:"Curry Noodles",p:1,l:"Hong Lim Market & Food Centre",area:"Chinatown",col:"brown",
+    note:"Compact Hong Lim stall best known for fried-chicken curry noodles, but also strong for char siew wanton mee and hor fun; weekday lunch queues build fast and it often sells out early",
+    w:"02-03",
+    h:{mf:[9.5,13.5],sat:null,sun:null},
+    src:"stall",
+    address:"531A Upper Cross Street, #02-03 Hong Lim Market & Food Centre, Singapore 051531",
+    mapsQuery:"Cantonese Delights 廣東小吃 Hong Lim Singapore",
+    hoursChecked:"2026-09-17",
+    hoursSourceLabel:"Current MakanCentral listing and current Google business hours",
+    hoursUrl:"https://www.makancentral.com/shop/cantonese-delights",
+    googleRating:4.6,googleReviews:361,ratingChecked:"2026-09-17",ratingSourceLabel:"Google reviews reported by MakanCentral",
+    hiddenGem:true,new:true,status:"active",statusChecked:"2026-09-17"
+  },
+  {
+    n:"Eddy's",altName:"艾迪一号",c:"Western Fusion",p:2,l:"Hong Lim Market & Food Centre",area:"Chinatown",col:"brown",
+    note:"Restaurant-style Western-Asian cooking from a tiny hawker stall; duck confit with mash or aglio olio is the signature, alongside dishes such as chicken chop laksa spaghetti and mala prawn pasta",
+    w:"02-13",
+    h:{mf:[10.5,14],sat:null,sun:null},
+    src:"stall",
+    address:"531A Upper Cross Street, #02-13 Hong Lim Market & Food Centre, Singapore 051531",
+    mapsQuery:"Eddy's Hong Lim Market Food Centre #02-13 Singapore",
+    hoursChecked:"2026-09-17",
+    hoursSourceLabel:"Current Google reviews via Wanderlog; #02-13 and weekday hours cross-checked with 2026 Chinatown coverage",
+    hoursUrl:"https://wanderlog.com/place/details/1987739/eddys",
+    googleRating:4.7,googleReviews:281,ratingChecked:"2026-09-17",ratingSourceLabel:"Google reviews via Wanderlog",
+    hiddenGem:true,new:true,status:"active",statusChecked:"2026-09-17"
+  },
+  {
     n:"Fire Flies",altName:"formerly Thunder Tree",c:"Vegan",p:1,l:"People's Park Centre",area:"Chinatown",col:"green",
     note:"Tiny basement vegan stall for lei cha, kolo mee and local plant-based comfort food; easy to miss inside the B1 food-court cluster",
     w:"B1-06 Stall 10",
