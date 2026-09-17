@@ -2,7 +2,7 @@
 (()=>{
   const basePool=pool;
   const basePaint=paint;
-  const RULE_LABELS={now:"Open now",halal:"Halal",fresh:"Not been lately"};
+  const RULE_LABELS={halal:"Halal",fresh:"Not been lately"};
 
   function resetDecisionViews(){
     if(typeof window.cancelActiveGame==="function")window.cancelActiveGame();
@@ -71,13 +71,13 @@
     const copy=document.createElement("div");
     const title=document.createElement("b");
     const count=S.base.length;
-    title.textContent=count+" "+(count===1?"option":"options")+" left";
+    title.textContent=count+" "+(count===1?"place":"places")+" open now";
     const sub=document.createElement("span");
     sub.textContent=count===1
-      ?"Only one left — tap it to view"
+      ?"Opening hours are applied automatically · tap to view"
       :count>1
-        ?"Tap any place to view it, or keep narrowing"
-        :"Updates live as you filter";
+        ?"Opening hours are applied automatically · tap any place to view or keep narrowing"
+        :"Opening hours are applied automatically";
     copy.append(title,sub);
     head.appendChild(copy);
     mount.appendChild(head);
@@ -85,11 +85,15 @@
     if(!count){
       const empty=document.createElement("div");
       empty.className="filter-preview-empty";
+      const matchedBeforeHours=Number(S.availableBeforeHours)||0;
+      const unavailable=matchedBeforeHours>0;
       empty.innerHTML='<svg class="filter-empty-art" viewBox="0 0 64 48" aria-hidden="true">'+
         '<ellipse cx="31" cy="27" rx="18" ry="11"/><ellipse cx="31" cy="27" rx="10" ry="6"/>'+
         '<path d="M8 10v25M4 10v9M12 10v9M52 10c5 6 5 12 0 17v8"/>'+
         '<circle class="crumb" cx="25" cy="25" r="1.7"/><circle class="crumb" cx="35" cy="29" r="1.4"/>'+
-        '</svg><span class="empty-copy">No places match these filters. Try removing one.</span>';
+        '</svg><span class="empty-copy">'+(unavailable
+          ?'Nothing matching these filters is open right now. Try another area or check back later.'
+          :'No places match these filters. Try removing one.')+'</span>';
       mount.appendChild(empty);
       return;
     }
@@ -128,12 +132,12 @@
     const title=document.createElement("b");
     title.textContent=roomNarrowed
       ? activeCount+" "+(activeCount===1?"option":"options")+" now"
-      : filteredCount+" filtered "+(filteredCount===1?"option":"options");
+      : filteredCount+" open "+(filteredCount===1?"place":"places");
     const sub=document.createElement("span");
     const summary=filterSummaryParts().join(" · ");
     sub.textContent=roomNarrowed
-      ? "Started with "+filteredCount+" from Narrow it down"+(summary?" · "+summary:"")
-      : "From Narrow it down"+(summary?" · "+summary:"");
+      ? "Started with "+filteredCount+" open from Narrow it down"+(summary?" · "+summary:"")
+      : "Open now automatically"+(summary?" · "+summary:"");
     copy.append(title,sub);
 
     const edit=document.createElement("button");
@@ -165,8 +169,9 @@
     resetDecisionViews();
     basePool();
 
-    /* Places can also disappear through Manage places while the user is on Ask/Fate.
-       If that leaves zero or one choice, return to Narrow instead of leaving a dead flow. */
+    /* Places can also disappear through Manage places or by crossing an opening-hours
+       boundary while the app is open. If that leaves zero or one choice, return to
+       Narrow instead of leaving a dead Ask/Fate flow. */
     if(S.stage>0&&S.base.length<=1&&typeof go==="function")go(0);
   };
 
