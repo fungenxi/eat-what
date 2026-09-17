@@ -98,6 +98,48 @@ const CHINATOWN_VERIFIED_GEMS=[
     hoursUrl:"https://chinatownsg.com/shop/danji-korean-bbq-buffet-chinatown-point",
     googleRating:4.6,googleReviews:364,ratingChecked:"2026-09-17",ratingSourceLabel:"Google reviews",
     hiddenGem:true,new:true,status:"active",statusChecked:"2026-09-17"
+  },
+  {
+    n:"DDSD - Soya Beancurd",altName:"大豆小豆",c:"Dessert",p:1,l:"Hong Lim Market & Food Centre",area:"Chinatown",col:"white",
+    note:"Blink-and-you-miss-it second-floor soy dessert stall run by a husband-and-wife duo; freshly made silky tau huay with black sesame and tang-yuan add-ons",
+    w:"02-53",
+    h:{mon:null,tue:[10,15.5],wed:[10,15.5],thu:[10,15.5],fri:[10,15.5],sat:[10,15.5],sun:null},
+    src:"stall",
+    address:"531A Upper Cross Street, #02-53 Hong Lim Market & Food Centre, Singapore 051531",
+    mapsQuery:"DDSD Soya Beancurd #02-53 Hong Lim Market and Food Centre Singapore",
+    hoursChecked:"2026-09-17",
+    hoursSourceLabel:"Current Google business listing and Wanderlog",
+    hoursUrl:"https://wanderlog.com/place/details/6687139/ddsd-soya-beancurd",
+    googleRating:4.6,googleReviews:207,ratingChecked:"2026-09-17",ratingSourceLabel:"Google reviews",
+    hiddenGem:true,new:true,status:"active",statusChecked:"2026-09-17"
+  },
+  {
+    n:"Generation Coffee Roasters (Hong Lim)",c:"Coffee",p:1,l:"Hong Lim Market & Food Centre",area:"Chinatown",col:"brown",
+    note:"Specialty coffee tucked into a hawker stall at approachable prices, mixing espresso drinks with local kopi and inventive seasonal drinks",
+    w:"01-59",
+    h:{mf:[[7.5,10.5],[11.5,15]],sat:[[7.5,10.5],[11.5,15]],sun:[[7.5,10.5],[11.5,15]]},
+    src:"stall",
+    address:"531A Upper Cross Street, #01-59 Hong Lim Market & Food Centre, Singapore 051531",
+    mapsQuery:"Generation Coffee Roasters Hong Lim #01-59 Singapore",
+    hoursChecked:"2026-09-17",
+    hoursSourceLabel:"Official Generation Coffee FAQ and Jul 2026 operating-hours update",
+    hoursUrl:"https://www.generationcoffee.sg/pages/faqs",
+    googleRating:4.5,googleReviews:177,ratingChecked:"2026-09-17",ratingSourceLabel:"Current Google business listing",
+    hiddenGem:true,new:true,status:"active",statusChecked:"2026-09-17"
+  },
+  {
+    n:"Fire Flies",altName:"formerly Thunder Tree",c:"Vegan",p:1,l:"People's Park Centre",area:"Chinatown",col:"green",
+    note:"Tiny basement vegan stall for lei cha, kolo mee and local plant-based comfort food; easy to miss inside the B1 food-court cluster",
+    w:"B1-06 Stall 10",
+    h:{mon:[10,19],tue:[10,19],wed:[10,19],thu:[10,19],fri:[10,19],sat:[10,19],sun:null},
+    src:"stall",
+    address:"101 Upper Cross Street, #B1-06 Stall 10 People's Park Centre, Singapore 058357",
+    mapsQuery:"Fire Flies formerly Thunder Tree People's Park Centre Singapore",
+    hoursChecked:"2026-09-17",
+    hoursSourceLabel:"SETHLUI 2026 visit and current Foodpanda listing",
+    hoursUrl:"https://sethlui.com/fire-flies-singapore/",
+    googleRating:4.6,googleReviews:365,ratingChecked:"2026-09-17",ratingSourceLabel:"Google reviews via Wanderlog",
+    hiddenGem:true,new:true,status:"active",statusChecked:"2026-09-17"
   }
 ];
 
